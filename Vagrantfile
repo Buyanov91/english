@@ -7,13 +7,12 @@ required_plugins.each do |plugin|
 end
 
 domains = {
-  frontend: 'y2aa-frontend.test',
-  backend:  'y2aa-backend.test'
+  frontend: 'english.local',
+  backend:  'english.admin'
 }
 
 config = {
   local: './vagrant/config/vagrant-local.yml',
-  example: './vagrant/config/vagrant-local.example.yml'
 }
 
 # copy config from example if local config not exists
