@@ -118,3 +118,15 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+#show-btn {
+    display: none;
+}
+
+#upload-text-form {
+    display: none;
+}
+
+#upload-file-form {
+    display: none;
+}
