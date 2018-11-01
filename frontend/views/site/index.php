@@ -34,6 +34,7 @@ $this->title = 'English';
                 <div class="col-md-3"></div>
 
                 <div class="col-md-7">
+
                     <?php $form = ActiveForm::begin(['id' => 'upload-text-form']); ?>
 
                     <div class="row">
@@ -46,14 +47,13 @@ $this->title = 'English';
                         </div>
                     </div>
 
-
                     <?php ActiveForm::end(); ?>
 
                     <?php $form = ActiveForm::begin(['id' => 'upload-file-form']); ?>
 
                     <div class="row">
                         <div class="col-md-8">
-                            <?= $form->field($text, 'filepath')->fileInput()->label(false) ?>
+                            <?= $form->field($file, 'file')->fileInput()->label(false) ?>
                         </div>
                         <div class="form-group col-md-4">
                             <?= Html::submitButton('Загрузить', ['class' => 'btn btn-primary']) ?>

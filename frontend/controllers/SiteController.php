@@ -12,7 +12,8 @@ use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use app\models\UploadForm;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
@@ -74,7 +75,33 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $text = new Text();
-        return $this->render('index', ['text' => $text]);
+
+        $file = new UploadForm();
+
+        if (Yii::$app->request->isPost) {
+
+            $file->file = UploadedFile::getInstance($file, 'file');
+
+            if ($file->upload()) {
+                $path = Yii::$app->params['pathUploads'].$file->file->name;
+                $textFile = file_get_contents($path);
+
+                $text->text = $textFile;
+                $text->filepath = $path;
+                $text->text_md5 = $text->textMD5($textFile);
+            }
+
+            if($text->load(Yii::$app->request->post())) {
+                $text->text_md5 = $text->textMD5(Yii::$app->request->post('text'));
+            }
+
+            $text->user_id = Yii::$app->user->id;
+
+            if($text->save()) {
+                return $this->goHome();
+            }
+        }
+        return $this->render('index', ['text' => $text, 'file' => $file]);
     }
 
     /**

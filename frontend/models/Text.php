@@ -69,4 +69,9 @@ class Text extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
+    public function textMD5($text)
+    {
+        return md5($this->text);
+    }
 }
