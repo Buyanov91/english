@@ -33,7 +33,7 @@ class Text extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'required'],
+            [['user_id', 'text', 'text_md5'], 'required'],
             [['user_id'], 'integer'],
             [['text', 'text_md5', 'filepath'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -74,4 +74,5 @@ class Text extends \yii\db\ActiveRecord
     {
         return md5($this->text);
     }
+
 }

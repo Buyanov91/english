@@ -1,7 +1,10 @@
 <?php
 namespace frontend\controllers;
 
+use app\models\Infinitive;
+use app\models\Sentence;
 use app\models\Text;
+use app\models\Word;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -98,7 +101,7 @@ class SiteController extends Controller
             $text->user_id = Yii::$app->user->id;
 
             if($text->save()) {
-                return $this->goHome();
+                return $this->getAllWords($text->id, $text->text);
             }
         }
         return $this->render('index', ['text' => $text, 'file' => $file]);
@@ -228,4 +231,87 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+    protected function getAllWords($text_id, $text)
+    {
+        $sentences = explode('.', $text);
+
+        foreach ($sentences as $sent) {
+            $sentence = new Sentence();
+            $sentence->sentence = $sent;
+            $sentence->text_id = $text_id;
+            $sentence->save();
+
+            $words = $this->getWordsFromText($sent);
+
+            foreach ($words as $newWord => $amount) {
+                $word = new Word();
+                $word->sentence_id = $sentence->id;
+                $word->word = $newWord;
+                $word->amount = $amount;
+                $word->save();
+
+                $infinitives = $this->translate($newWord, 'infinitive');
+                foreach ($infinitives as $i => $key){
+                    foreach ($key['def'] as $key) {
+                        $infinitive = new Infinitive();
+                        $infinitive->infinitive = $key['text'];
+                        $infinitive->word_id = $word->id;
+                        $infinitive->amount = $word->amount;
+                        $infinitive->save();
+                    }
+                }
+            }
+        }
+        return $this->goHome();
+    }
+
+    public function getWordsFromText($text)
+    {
+        $words = [];
+
+        $symbols = array('!',',','.','\'','"','-',':',';','?',"\r",'(',')');
+
+        $text = str_replace($symbols, '', $text);     # Удаляем из текста ненужные символы
+
+        $text = str_replace("\n", ' ', $text);    # Заменяем переносы строк на пробелы
+
+        $text_array = explode(' ',$text);    # 'Разрезаем' текст на слова
+
+        foreach($text_array as $val){     # Переберем слова и исключим дубликаты
+            if($val==''){continue;}
+            $val = strtolower($val);
+            if(array_key_exists($val, $words)){     # Если такое слово уже есть в массиве, увеличим счетчик
+                $words[$val]++;
+            } else {
+                $words[$val] = 1;
+            }
+        }
+
+        return $words;
+    }
+
+    public function translate($words, $type = 'translate')
+    {
+        $key ='dict.1.1.20181102T061057Z.1cde8c000cfdc4f7.bd4e27863b0270a2fe2e1ea6d0f712faeefdfaa4';
+        $lang = 'en-ru';
+
+        if($type === 'infinitive') {
+            $lang = 'en-en';
+        }
+        $arr = [];
+        if(is_array($words)){
+            foreach($words as $word => $val){
+                $url_to_dict = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key='.$key.'&lang='.$lang.'&text='.$word.'&flags=4';
+                $arr[$word][$val] = json_decode(file_get_contents($url_to_dict,3), true);
+            }
+        } else {
+            $url_to_dict = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key='.$key.'&lang='.$lang.'&text='.$words.'&flags=4';
+            $arr[$words] = json_decode(file_get_contents($url_to_dict,3), true);
+        }
+
+
+        return $arr;
+    }
+
 }

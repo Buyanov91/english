@@ -66,4 +66,5 @@ class Word extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Sentence::className(), ['id' => 'sentence_id']);
     }
+
 }
