@@ -42,8 +42,8 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
     } else {
-        $menuItems[] = ['label' => 'К Изучению', 'url' => ['/site/learning']];
-        $menuItems[] = ['label' => 'Популярные Слова', 'url' => ['/site/popular']];
+        $menuItems[] = ['label' => 'Изучение', 'url' => ['/learning/']];
+        $menuItems[] = ['label' => 'Популярные Слова', 'url' => ['/popular/']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

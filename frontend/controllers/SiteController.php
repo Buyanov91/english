@@ -151,26 +151,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
-     *
-     * @return mixed
-     */
-    public function actionPopular()
-    {
-        return $this->render('popular');
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return mixed
-     */
-    public function actionLearning()
-    {
-        return $this->render('learning');
-    }
-
-    /**
      * Signs user up.
      *
      * @return mixed

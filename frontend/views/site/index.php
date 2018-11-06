@@ -18,7 +18,7 @@ $this->title = 'English';
         <?php else: ?>
 
             <div id="download">
-                <p class="lead">Загрузите пожалуйста, свой текст.</p>
+                <p class="text-muted">Загрузите пожалуйста, свой текст.</p>
                 <p><a id="main-btn" class="btn btn-lg btn-success" href="javascript:">Загрузить</a></p>
             </div>
 

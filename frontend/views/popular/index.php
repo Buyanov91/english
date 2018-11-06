@@ -5,7 +5,7 @@
 use yii\helpers\Html;
 
 $this->title = 'English | Популярные';
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div>
     <p>Этот раздел пока пуст</p>

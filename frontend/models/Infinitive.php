@@ -68,10 +68,11 @@ class Infinitive extends \yii\db\ActiveRecord
         return $this->hasOne(Word::className(), ['id' => 'word_id']);
     }
 
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStudies()
+    public function getStudy()
     {
         return $this->hasMany(Study::className(), ['infinitive_id' => 'id']);
     }
