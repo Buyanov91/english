@@ -17,6 +17,8 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
+use app\models\Translate;
+use yii\helpers\ArrayHelper;
 
 /**
  * Site controller
@@ -100,8 +102,14 @@ class SiteController extends Controller
 
             $text->user_id = Yii::$app->user->id;
 
+            if(Text::checkTexts($text->text)) {
+                $session = Yii::$app->session;
+                $session->setFlash('error', 'Этот текст уже загружали ранее');
+                return $this->goHome();
+            }
+
             if($text->save()) {
-                return $this->getAllWords($text->id, $text->text);
+                return $this->uploadWords($text->id, $text->text);
             }
         }
         return $this->render('index', ['text' => $text, 'file' => $file]);
@@ -232,7 +240,7 @@ class SiteController extends Controller
         ]);
     }
 
-    protected function getAllWords($text_id, $text)
+    protected function uploadWords($text_id, $text)
     {
         $sentences = explode('.', $text);
 
@@ -242,7 +250,7 @@ class SiteController extends Controller
             $sentence->text_id = $text_id;
             $sentence->save();
 
-            $words = $this->getWordsFromText($sent);
+            $words = $this->parseText($sent);
 
             foreach ($words as $newWord => $amount) {
                 $word = new Word();
@@ -251,9 +259,9 @@ class SiteController extends Controller
                 $word->amount = $amount;
                 $word->save();
 
-                $infinitives = $this->translate($newWord, 'infinitive');
-                foreach ($infinitives as $i => $key){
-                    foreach ($key['def'] as $key) {
+                $infinitives = Translate::translate($newWord, 'infinitive');
+                foreach ($infinitives as $i => $keys){
+                    foreach ($keys['def'] as $key) {
                         $infinitive = new Infinitive();
                         $infinitive->infinitive = $key['text'];
                         $infinitive->word_id = $word->id;
@@ -266,7 +274,7 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    public function getWordsFromText($text)
+    protected function parseText($text)
     {
         $words = [];
 
@@ -290,28 +298,4 @@ class SiteController extends Controller
 
         return $words;
     }
-
-    public function translate($words, $type = 'translate')
-    {
-        $key ='dict.1.1.20181102T061057Z.1cde8c000cfdc4f7.bd4e27863b0270a2fe2e1ea6d0f712faeefdfaa4';
-        $lang = 'en-ru';
-
-        if($type === 'infinitive') {
-            $lang = 'en-en';
-        }
-        $arr = [];
-        if(is_array($words)){
-            foreach($words as $word => $val){
-                $url_to_dict = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key='.$key.'&lang='.$lang.'&text='.$word.'&flags=4';
-                $arr[$word][$val] = json_decode(file_get_contents($url_to_dict,3), true);
-            }
-        } else {
-            $url_to_dict = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key='.$key.'&lang='.$lang.'&text='.$words.'&flags=4';
-            $arr[$words] = json_decode(file_get_contents($url_to_dict,3), true);
-        }
-
-
-        return $arr;
-    }
-
 }
