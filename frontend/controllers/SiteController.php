@@ -93,11 +93,11 @@ class SiteController extends Controller
 
                 $text->text = $textFile;
                 $text->filepath = $path;
-                $text->text_md5 = $text->textMD5($textFile);
+                $text->text_md5 = $text->textMD5();
             }
 
             if($text->load(Yii::$app->request->post())) {
-                $text->text_md5 = $text->textMD5(Yii::$app->request->post('text'));
+                $text->text_md5 = $text->textMD5();
             }
 
             $text->user_id = Yii::$app->user->id;

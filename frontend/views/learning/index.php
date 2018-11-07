@@ -16,6 +16,8 @@ $this->title = 'English | Изучение';
         <?= Html::a('Добавить слова', ['learning/add'], ['class' => 'btn btn-lg btn-info']) ?>
     <?php else: ?>
         <?= Html::button('Начать изучение', ['class' => 'btn btn-lg btn-warning']) ?>
+        <br><br>
+        <?= Html::a('Добавить слова', ['learning/add'], ['class' => 'btn btn-lg btn-info']) ?>
     <?php endif; ?>
 
 </div>

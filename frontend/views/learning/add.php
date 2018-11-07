@@ -33,7 +33,7 @@ $this->title = 'English | Изучение';
                     ]); ?>
                     <h4>Пример предложения:</h4>
                     <p><?= $word['sentence'] ?></p>
-                    <?= Html::a('Добавить', ['/learning/addToStudy?word_id='.$word['id']], ['class' => 'btn btn-warning', 'id' => 'word-link']) ?>
+                    <?= Html::a('Добавить', ['/learning/study?word_id='.$word['id']], ['class' => 'btn btn-warning word-link']) ?>
                     <?php Modal::end(); ?>
                 </p>
             </div>
@@ -44,3 +44,4 @@ $this->title = 'English | Изучение';
     <?php endif; ?>
 
 </div>
+

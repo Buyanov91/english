@@ -15,6 +15,8 @@ use Yii;
  */
 class Study extends \yii\db\ActiveRecord
 {
+    const STATUS_STUDY = 1;
+    const STATUS_STUDIED = 2;
     /**
      * {@inheritdoc}
      */

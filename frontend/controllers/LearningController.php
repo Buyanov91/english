@@ -9,8 +9,7 @@
 namespace frontend\controllers;
 
 use app\models\Infinitive;
-//use app\models\Study;
-use app\models\Sentence;
+use app\models\Study;
 use app\models\Word;
 use yii\web\Controller;
 use Yii;
@@ -22,6 +21,7 @@ class LearningController extends Controller
         $words = Infinitive::find()
             ->innerJoinWith('study')
             ->where(['study.user_id' => Yii::$app->user->id])
+            ->andWhere(['study.status' => 1])
             ->all();
 
         return $this->render('index', ['words' => $words]);
@@ -39,8 +39,17 @@ class LearningController extends Controller
         return $this->render('add', ['words' => $words]);
     }
 
-    public function actionAddToStudy($word_id)
+    public function actionStudy($word_id)
     {
-
+        $infinitive_id = Infinitive::find()
+            ->select('id')
+            ->where('word_id = '.$word_id)
+            ->asArray()
+            ->one();
+        $study = new Study();
+        $study->user_id = Yii::$app->user->id;
+        $study->infinitive_id = $infinitive_id['id'];
+        $study->status = Study::STATUS_STUDY;
+        $study->save();
     }
 }

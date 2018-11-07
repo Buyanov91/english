@@ -2,9 +2,7 @@
 
 namespace app\models;
 
-use Yii;
 use common\models\User;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "text".
@@ -71,20 +69,21 @@ class Text extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    public function textMD5($text)
+    public function textMD5()
     {
         return md5($this->text);
     }
 
     public static function checkTexts($text)
     {
-        $texts = self::find()->select('text')->all();
-
-        $data = ArrayHelper::toArray($texts);
+        $texts = self::find()
+            ->select('text')
+            ->asArray()
+            ->all();
 
         $arr = [];
 
-        foreach ($data as $id => $value){
+        foreach ($texts as $id => $value){
             $arr[] = $value['text'];
         }
 
