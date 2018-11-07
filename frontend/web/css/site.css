@@ -130,3 +130,11 @@ a.desc:after {
 #upload-file-form {
     display: none;
 }
+
+a {
+    cursor: pointer;
+}
+
+a:hover {
+    color: black;
+}

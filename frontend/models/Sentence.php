@@ -60,7 +60,7 @@ class Sentence extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWords()
+    public function getWord()
     {
         return $this->hasMany(Word::className(), ['sentence_id' => 'id']);
     }

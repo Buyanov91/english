@@ -67,4 +67,10 @@ class Word extends \yii\db\ActiveRecord
         return $this->hasOne(Sentence::className(), ['id' => 'sentence_id']);
     }
 
+    public function getText()
+    {
+        return $this->hasOne(Text::className(), ['id' => 'text_id'])
+            ->viaTable('sentence', ['id' => 'sentence_id']);
+    }
+
 }
