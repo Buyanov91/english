@@ -31,10 +31,11 @@ class Word extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['word', 'sentence_id', 'amount'], 'required'],
-            [['sentence_id', 'amount'], 'integer'],
+            [['word', 'sentence_id', 'amount', 'infinitive_id'], 'required'],
+            [['sentence_id', 'amount', 'infinitive_id'], 'integer'],
             [['word'], 'string', 'max' => 255],
             [['sentence_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sentence::className(), 'targetAttribute' => ['sentence_id' => 'id']],
+            [['infinitive_id'], 'exist', 'skipOnError' => true, 'targetClass' => Infinitive::className(), 'targetAttribute' => ['infinitive_id' => 'id']],
         ];
     }
 
@@ -46,7 +47,6 @@ class Word extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'word' => 'Word',
-            'sentence_id' => 'Sentence ID',
             'amount' => 'Amount',
         ];
     }
@@ -54,9 +54,9 @@ class Word extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getInfinitives()
+    public function getInfinitive()
     {
-        return $this->hasMany(Infinitive::className(), ['word_id' => 'id']);
+        return $this->hasOne(Infinitive::className(), ['id' => 'infinitive_id']);
     }
 
     /**

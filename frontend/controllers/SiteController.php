@@ -102,14 +102,15 @@ class SiteController extends Controller
 
             $text->user_id = Yii::$app->user->id;
 
-            if(Text::checkTexts($text->text)) {
+            if(Text::checkText($text->text)) {
                 $session = Yii::$app->session;
                 $session->setFlash('error', 'Этот текст уже загружали ранее');
                 return $this->goHome();
             }
 
             if($text->save()) {
-                return $this->uploadWords($text->id, $text->text);
+              UploadForm::uploadWords($text->id, $text->text);
+              return $this->goHome();
             }
         }
         return $this->render('index', ['text' => $text, 'file' => $file]);
@@ -218,64 +219,5 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
-    }
-
-    protected function uploadWords($text_id, $text)
-    {
-        $sentences = explode('.', $text);
-
-        foreach ($sentences as $sent) {
-            $sentence = new Sentence();
-            $sentence->sentence = $sent;
-            $sentence->text_id = $text_id;
-            $sentence->save();
-
-            $words = $this->parseText($sent);
-
-            foreach ($words as $newWord => $amount) {
-                $word = new Word();
-                $word->sentence_id = $sentence->id;
-                $word->word = $newWord;
-                $word->amount = $amount;
-                $word->save();
-
-                $infinitives = Translate::translate($newWord, 'infinitive');
-                foreach ($infinitives as $i => $keys){
-                    foreach ($keys['def'] as $key) {
-                        $infinitive = new Infinitive();
-                        $infinitive->infinitive = $key['text'];
-                        $infinitive->word_id = $word->id;
-                        $infinitive->amount = $word->amount;
-                        $infinitive->save();
-                    }
-                }
-            }
-        }
-        return $this->goHome();
-    }
-
-    protected function parseText($text)
-    {
-        $words = [];
-
-        $symbols = array('!',',','.','\'','"','-',':',';','?',"\r",'(',')');
-
-        $text = str_replace($symbols, '', $text);     # Удаляем из текста ненужные символы
-
-        $text = str_replace("\n", ' ', $text);    # Заменяем переносы строк на пробелы
-
-        $text_array = explode(' ',$text);    # 'Разрезаем' текст на слова
-
-        foreach($text_array as $val){     # Переберем слова и исключим дубликаты
-            if($val==''){continue;}
-            $val = strtolower($val);
-            if(array_key_exists($val, $words)){     # Если такое слово уже есть в массиве, увеличим счетчик
-                $words[$val]++;
-            } else {
-                $words[$val] = 1;
-            }
-        }
-
-        return $words;
     }
 }

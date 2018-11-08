@@ -74,10 +74,11 @@ class Text extends \yii\db\ActiveRecord
         return md5($this->text);
     }
 
-    public static function checkTexts($text)
+    public static function checkText($text)
     {
         $texts = self::find()
             ->select('text')
+            ->where('user_id = '.\Yii::$app->user->id)
             ->asArray()
             ->all();
 
@@ -92,6 +93,31 @@ class Text extends \yii\db\ActiveRecord
         } else {
             return false;
         }
+    }
+
+    public static function parseText($text)
+    {
+        $words = [];
+
+        $symbols = array('!',',','.','\'','"','-',':',';','?',"\r",'(',')');
+
+        $text = str_replace($symbols, '', $text);     # Удаляем из текста ненужные символы
+
+        $text = str_replace("\n", ' ', $text);    # Заменяем переносы строк на пробелы
+
+        $text_array = explode(' ',$text);    # 'Разрезаем' текст на слова
+
+        foreach($text_array as $val){     # Переберем слова и исключим дубликаты
+            if($val==''){continue;}
+            $val = strtolower($val);
+            if(array_key_exists($val, $words)){     # Если такое слово уже есть в массиве, увеличим счетчик
+                $words[$val]++;
+            } else {
+                $words[$val] = 1;
+            }
+        }
+
+        return $words;
     }
 
 }

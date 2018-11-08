@@ -41,14 +41,14 @@ class LearningController extends Controller
 
     public function actionStudy($word_id)
     {
-        $infinitive_id = Infinitive::find()
-            ->select('id')
-            ->where('word_id = '.$word_id)
+        $infinitive_id = Word::find()
+            ->innerJoinWith('infinitive')
+            ->where('word.id = '.$word_id)
             ->asArray()
             ->one();
         $study = new Study();
         $study->user_id = Yii::$app->user->id;
-        $study->infinitive_id = $infinitive_id['id'];
+        $study->infinitive_id = $infinitive_id['infinitive_id'];
         $study->status = Study::STATUS_STUDY;
         $study->save();
     }

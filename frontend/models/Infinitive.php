@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use common\models\User;
 
 /**
  * This is the model class for table "infinitive".
@@ -32,10 +33,10 @@ class Infinitive extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['word_id', 'infinitive', 'amount'], 'required'],
-            [['word_id', 'amount'], 'integer'],
+            [['infinitive', 'amount', 'user_id'], 'required'],
+            [['amount'], 'integer'],
             [['infinitive'], 'string', 'max' => 255],
-            [['word_id'], 'exist', 'skipOnError' => true, 'targetClass' => Word::className(), 'targetAttribute' => ['word_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -46,10 +47,15 @@ class Infinitive extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'word_id' => 'Word ID',
+            'user_id' => 'USER',
             'infinitive' => 'Infinitive',
             'amount' => 'Amount',
         ];
+    }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -63,9 +69,9 @@ class Infinitive extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWord()
+    public function getWords()
     {
-        return $this->hasOne(Word::className(), ['id' => 'word_id']);
+        return $this->hasMany(Word::className(), ['infinitive_id' => 'id']);
     }
 
 
@@ -75,5 +81,22 @@ class Infinitive extends \yii\db\ActiveRecord
     public function getStudy()
     {
         return $this->hasMany(Study::className(), ['infinitive_id' => 'id']);
+    }
+
+    public static function checkInfinitive($infinitive)
+    {
+        $infinitives = Infinitive::find()
+            ->where('user_id = '.Yii::$app->user->id)
+            ->orderBy('id')
+            ->asArray()
+            ->all();
+
+        foreach ($infinitives as $value){
+            if($infinitive === $value['infinitive']){
+                return $value['id'];
+            } else {
+                continue;
+            }
+        }
     }
 }
