@@ -6,9 +6,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Modal;
 
 $this->title = 'English | Изучение';
-//$this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php //debug($words)?>
 <div class="jumbotron">
 
     <?php if(empty($words)) : ?>
@@ -24,9 +22,9 @@ $this->title = 'English | Изучение';
             <div class="col-md-3">
                 <p>
                     <?php Modal::begin([
-                        'header' => '<h2>'.$word['word'].'</h2>',
+                        'header' => '<h2>'.ucfirst($word['word']).'</h2>',
                         'toggleButton' => [
-                            'label' => $word['word'],
+                            'label' => ucfirst($word['word']),
                             'tag' => 'a',
                             'class' => 'text-muted',
                         ],

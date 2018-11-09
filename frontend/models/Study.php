@@ -56,4 +56,5 @@ class Study extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Infinitive::className(), ['id' => 'infinitive_id']);
     }
+
 }

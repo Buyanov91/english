@@ -24,6 +24,38 @@ $('.word-link').bind('click', function (e) {
     });
 });
 
+$('#learn').click(function (e) {
+    e.preventDefault();
+    var url = $(this).attr('href');
+    $.getJSON(url, function (data) {
+        $('#learn-word').html(data.infinitive);
+        $('#translate-word').html(data.translate);
+        $('#known').attr('href', 'learning/know?status=1&infinitive_id='+data.id);
+        $('#unknown').attr('href', 'learning/know?status=0&infinitive_id='+data.id);
+        $('.main-study').fadeOut(0);
+        $('.hide-study').fadeIn();
+        $('.hide-end-button').fadeIn();
+    });
+});
+
+$('#translate').click(function () {
+    $('.hide-study').fadeOut(0);
+    $('.hide-translate').fadeIn();
+});
+
+$('#known, #unknown').click(function (e) {
+    e.preventDefault();
+    var url = $(this).attr('href');
+    $.getJSON(url, function (data) {
+        $('#learn-word').html(data.infinitive);
+        $('#translate-word').html(data.translate);
+        $('#known').attr('href', 'learning/know?status=1&infinitive_id='+data.id);
+        $('#unknown').attr('href', 'learning/know?status=0&infinitive_id='+data.id);
+        $('.hide-translate').fadeOut(0);
+        $('.hide-study').fadeIn();
+    });
+});
+
 }());
 
 

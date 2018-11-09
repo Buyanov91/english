@@ -9,5 +9,10 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'db' => [
+            'on afterOpen' => function($event) {
+                $event->sender->createCommand("SET sql_mode = 'TRADITIONAL';")->execute();
+            },
+        ]
     ],
 ];

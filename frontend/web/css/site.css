@@ -138,3 +138,24 @@ a {
 a:hover {
     color: black;
 }
+
+.shadow {
+    margin-left: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.19), 0 3px 3px rgba(0,0,0,0.22);
+}
+
+.shadow small {
+    float: right;
+}
+.hide-study {
+    display: none;
+}
+
+.hide-translate {
+    display: none;
+}
+
+.hide-end-button {
+    display: none;
+}
