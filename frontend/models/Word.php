@@ -62,6 +62,15 @@ class Word extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getStudy()
+    {
+        return $this->hasOne(Study::className(), ['infinitive_id' => 'id'])
+            ->viaTable('infinitive', ['id' => 'infinitive_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getSentence()
     {
         return $this->hasOne(Sentence::className(), ['id' => 'sentence_id']);

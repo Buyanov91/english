@@ -12,6 +12,7 @@ use app\models\Infinitive;
 use app\models\Study;
 use app\models\Translate;
 use app\models\Word;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use Yii;
 
@@ -46,11 +47,15 @@ class LearningController extends Controller
     {
         $words = Word::find()
             ->select('word.*, sentence.sentence')
+//            ->innerJoinWith('study')
             ->innerJoinWith('text')
             ->where(['text.user_id' => Yii::$app->user->id])
+//            ->andWhere('study.status!=2')
             ->orderBy('word.word')
+            ->groupBy('word.word')
             ->asArray()
             ->all();
+//        debug($words);
         return $this->render('add', ['words' => $words]);
     }
 
@@ -77,24 +82,27 @@ class LearningController extends Controller
             ->asArray()
             ->all();
         if(empty($words)) {
-            return $this->render('learning/index');
+            return json_encode($words, JSON_UNESCAPED_UNICODE);
+        } else {
+            $random = array_rand($words);
+            $translate = Translate::translate($words[$random]['infinitive']);
+            $words[$random]['translate'] = $translate[$words[$random]['infinitive']]['def'][0]['tr'][0]['text'];
+            return json_encode($words[$random], JSON_UNESCAPED_UNICODE);
         }
-        $random = array_rand($words);
-        $translate = Translate::translate($words[$random]['infinitive']);
-        $words[$random]['translate'] = $translate[$words[$random]['infinitive']]['def'][0]['tr'][0]['text'];
-        return json_encode($words[$random], JSON_UNESCAPED_UNICODE);
     }
 
     public function actionKnow($infinitive_id, $status)
     {
-        if($status === 0){
+        if($status == 0){
             return self::actionRandomWord();
         } else {
             $study = Study::find()
                 ->where('infinitive_id='.$infinitive_id)
                 ->andWhere('user_id='.\Yii::$app->user->id)
+                ->andWhere('status=1')
                 ->one();
-            $study->updateCounters(['status' => 1]);
+            $study->status = 2;
+            $study->save();
             return self::actionRandomWord();
         }
     }

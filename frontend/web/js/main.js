@@ -47,6 +47,9 @@ $('#known, #unknown').click(function (e) {
     e.preventDefault();
     var url = $(this).attr('href');
     $.getJSON(url, function (data) {
+        if(data == '') {
+            location.reload();
+        }
         $('#learn-word').html(data.infinitive);
         $('#translate-word').html(data.translate);
         $('#known').attr('href', 'learning/know?status=1&infinitive_id='+data.id);
