@@ -47,10 +47,9 @@ class LearningController extends Controller
     {
         $words = Word::find()
             ->select('word.*, sentence.sentence')
-//            ->innerJoinWith('study')
             ->innerJoinWith('text')
+            ->with('study')
             ->where(['text.user_id' => Yii::$app->user->id])
-//            ->andWhere('study.status!=2')
             ->orderBy('word.word')
             ->groupBy('word.word')
             ->asArray()

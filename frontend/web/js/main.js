@@ -20,7 +20,9 @@ $('.word-link').bind('click', function (e) {
     e.preventDefault();
     var url = $(this).attr('href');
     $.get(url, function () {
+        var id = url.substring(url.lastIndexOf('=') + 1);
         $('.close').click();
+        $('#'+id).hide(100);
     });
 });
 

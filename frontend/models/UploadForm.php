@@ -60,7 +60,7 @@ class UploadForm extends Model
                 $word->amount = $amount;
 
                 $id = Infinitive::checkInfinitive($infinitive_translate);
-                debug($id);
+
                 if($id) {
                     $infinitive = Infinitive::findOne($id);
                     $infinitive->updateCounters(['amount' => 1]);
