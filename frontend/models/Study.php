@@ -57,4 +57,29 @@ class Study extends \yii\db\ActiveRecord
         return $this->hasOne(Infinitive::className(), ['id' => 'infinitive_id']);
     }
 
+    public function addToStudy($word_id)
+    {
+        $infinitive_id = Word::find()
+            ->innerJoinWith('infinitive')
+            ->where('word.id = '.$word_id)
+            ->asArray()
+            ->one();
+
+        $this->user_id = Yii::$app->user->id;
+        $this->infinitive_id = $infinitive_id['infinitive_id'];
+        $this->status = Study::STATUS_STUDY;
+        $this->save();
+    }
+
+    public static function removeFromStudy($id)
+    {
+        $study = self::find()
+            ->where('infinitive_id='.$id)
+            ->andWhere('user_id='.\Yii::$app->user->id)
+            ->andWhere('status=1')
+            ->one();
+        $study->status = self::STATUS_STUDIED;
+        $study->save();
+    }
+
 }

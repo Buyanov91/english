@@ -99,4 +99,30 @@ class Infinitive extends \yii\db\ActiveRecord
             }
         }
     }
+
+    public static function findInfinitivesToStudy()
+    {
+        $infinitives = self::find()
+            ->innerJoinWith('study')
+            ->where(['study.user_id' => Yii::$app->user->id])
+            ->andWhere(['study.status' => 1])
+            ->asArray()
+            ->all();
+        return $infinitives;
+    }
+
+    public static function calcPercentStudiedWords()
+    {
+        $count_study = self::find()
+            ->innerJoinWith('study')
+            ->where(['study.user_id' => Yii::$app->user->id])
+            ->andWhere(['study.status' => 2])
+            ->count();
+
+        $count_all = self::find()->count();
+
+        $percent = round($count_study/$count_all*100, 1);
+
+        return $percent;
+    }
 }

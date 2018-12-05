@@ -82,4 +82,31 @@ class Word extends \yii\db\ActiveRecord
             ->viaTable('sentence', ['id' => 'sentence_id']);
     }
 
+    public static function findPopularInfinitives()
+    {
+        $infinitives = self::find()
+            ->innerJoinWith('infinitive')
+            ->innerJoinWith('sentence')
+            ->where('infinitive.user_id = '.\Yii::$app->user->id)
+            ->groupBy('infinitive.id')
+            ->orderBy('infinitive.amount DESC')
+            ->limit(20)
+            ->all();
+        return $infinitives;
+    }
+
+    public static function findNewWords()
+    {
+        $words = self::find()
+            ->select('word.*, sentence.sentence')
+            ->innerJoinWith('text')
+            ->with('study')
+            ->where(['text.user_id' => Yii::$app->user->id])
+            ->orderBy('word.word')
+            ->groupBy('word.word')
+            ->asArray()
+            ->all();
+        return $words;
+    }
+
 }

@@ -88,28 +88,21 @@ class SiteController extends Controller
             $file->file = UploadedFile::getInstance($file, 'file');
 
             if ($file->upload()) {
-                $path = Yii::$app->params['pathUploads'].$file->file->name;
-                $textFile = file_get_contents($path);
-
-                $text->text = $textFile;
-                $text->filepath = $path;
-                $text->text_md5 = $text->textMD5();
+                $text->updateAttributesFromFile($file->file->name);
             }
 
             if($text->load(Yii::$app->request->post())) {
-                $text->text_md5 = $text->textMD5();
+                $text->updateAttributesFromForm();
             }
 
-            $text->user_id = Yii::$app->user->id;
-
-            if(Text::checkText($text->text)) {
+            if(Text::checkTextForExist($text->text)) {
                 $session = Yii::$app->session;
                 $session->setFlash('error', 'Этот текст уже загружали ранее');
                 return $this->goHome();
             }
 
             if($text->save()) {
-              UploadForm::uploadWords($text->id, $text->text);
+              $text->parseText();
               return $this->goHome();
             }
         }

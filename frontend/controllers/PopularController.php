@@ -8,7 +8,6 @@
 
 namespace frontend\controllers;
 
-use app\models\Infinitive;
 use app\models\Word;
 use yii\web\Controller;
 
@@ -20,15 +19,8 @@ class PopularController extends Controller
             return $this->render('/site/index');
         }
 
-        $words = Word::find()
-            ->innerJoinWith('infinitive')
-            ->innerJoinWith('sentence')
-            ->where('infinitive.user_id = '.\Yii::$app->user->id)
-            ->groupBy('infinitive.id')
-            ->orderBy('infinitive.amount DESC')
-            ->limit(20)
-            ->all();
-//        debug($words);
+        $words = Word::findPopularInfinitives();
+
         return $this->render('index', ['words' => $words]);
     }
 }

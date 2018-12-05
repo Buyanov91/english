@@ -24,62 +24,29 @@ class LearningController extends Controller
             return $this->render('/site/index');
         }
 
-        $words = Infinitive::find()
-            ->innerJoinWith('study')
-            ->where(['study.user_id' => Yii::$app->user->id])
-            ->andWhere(['study.status' => 1])
-            ->all();
+        $words = Infinitive::findInfinitivesToStudy();
 
-        $count_study = Infinitive::find()
-            ->innerJoinWith('study')
-            ->where(['study.user_id' => Yii::$app->user->id])
-            ->andWhere(['study.status' => 2])
-            ->count();
+        $percent = Infinitive::calcPercentStudiedWords();
 
-        $count_all = Infinitive::find()->count();
-
-        $persent = round($count_study/$count_all*100, 1);
-
-        return $this->render('index', ['words' => $words, 'percent' => $persent]);
+        return $this->render('index', ['words' => $words, 'percent' => $percent]);
     }
 
     public function actionAdd()
     {
-        $words = Word::find()
-            ->select('word.*, sentence.sentence')
-            ->innerJoinWith('text')
-            ->with('study')
-            ->where(['text.user_id' => Yii::$app->user->id])
-            ->orderBy('word.word')
-            ->groupBy('word.word')
-            ->asArray()
-            ->all();
-//        debug($words);
+        $words = Word::findNewWords();
+
         return $this->render('add', ['words' => $words]);
     }
 
     public function actionStudy($word_id)
     {
-        $infinitive_id = Word::find()
-            ->innerJoinWith('infinitive')
-            ->where('word.id = '.$word_id)
-            ->asArray()
-            ->one();
         $study = new Study();
-        $study->user_id = Yii::$app->user->id;
-        $study->infinitive_id = $infinitive_id['infinitive_id'];
-        $study->status = Study::STATUS_STUDY;
-        $study->save();
+        $study->addToStudy($word_id);
     }
 
     public function actionRandomWord()
     {
-        $words = Infinitive::find()
-            ->innerJoinWith('study')
-            ->where(['study.user_id' => Yii::$app->user->id])
-            ->andWhere(['study.status' => 1])
-            ->asArray()
-            ->all();
+        $words = Infinitive::findInfinitivesToStudy();
         if(empty($words)) {
             return json_encode($words, JSON_UNESCAPED_UNICODE);
         } else {
@@ -95,13 +62,7 @@ class LearningController extends Controller
         if($status == 0){
             return self::actionRandomWord();
         } else {
-            $study = Study::find()
-                ->where('infinitive_id='.$infinitive_id)
-                ->andWhere('user_id='.\Yii::$app->user->id)
-                ->andWhere('status=1')
-                ->one();
-            $study->status = 2;
-            $study->save();
+            Study::removeFromStudy($infinitive_id);
             return self::actionRandomWord();
         }
     }

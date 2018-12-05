@@ -28,6 +28,9 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
+    $checkController = function ($controller) {
+        return $controller === $this->context->getUniqueId();
+    };
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
@@ -42,8 +45,8 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
     } else {
-        $menuItems[] = ['label' => 'Изучение', 'url' => ['/learning/']];
-        $menuItems[] = ['label' => 'Популярные Слова', 'url' => ['/popular/']];
+        $menuItems[] = ['label' => 'Изучение', 'url' => ['/learning/'], 'active' => $checkController('learning')];
+        $menuItems[] = ['label' => 'Популярные Слова', 'url' => ['/popular/'], 'active' => $checkController('popular')];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

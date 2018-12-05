@@ -3,6 +3,7 @@
 namespace app\models;
 
 use common\models\User;
+use Yii;
 
 /**
  * This is the model class for table "text".
@@ -74,11 +75,28 @@ class Text extends \yii\db\ActiveRecord
         return md5($this->text);
     }
 
-    public static function checkText($text)
+    public function updateAttributesFromFile($filename)
+    {
+        $path = Yii::$app->params['pathUploads'].$filename;
+        $textFile = file_get_contents($path);
+
+        $this->text = $textFile;
+        $this->filepath = $path;
+        $this->text_md5 = $this->textMD5();
+        $this->user_id = Yii::$app->user->id;
+    }
+
+    public function updateAttributesFromForm()
+    {
+        $this->text_md5 = $this->textMD5();
+        $this->user_id = Yii::$app->user->id;
+    }
+
+    public static function checkTextForExist($text)
     {
         $texts = self::find()
             ->select('text')
-            ->where('user_id = '.\Yii::$app->user->id)
+            ->where('user_id = '.Yii::$app->user->id)
             ->asArray()
             ->all();
 
@@ -95,7 +113,51 @@ class Text extends \yii\db\ActiveRecord
         }
     }
 
-    public static function parseText($text)
+    public function parseText()
+    {
+        $text = $this->text;
+        $text_id = $this->id;
+
+        $sentences = explode('.', $text);
+
+        foreach ($sentences as $sent) {
+            $sentence = new Sentence();
+            $sentence->sentence = $sent;
+            $sentence->text_id = $text_id;
+            $sentence->save();
+
+            $words = Text::parseTextToWords($sent);
+
+            foreach ($words as $newWord => $amount) {
+
+                $infinitive_trans = Translate::translate($newWord, Translate::ENG_TO_ENG);
+                $infinitive_translate = $infinitive_trans[$newWord]['def'][0]['text'];
+
+                $word = new Word();
+                $word->sentence_id = $sentence->id;
+                $word->word = $newWord;
+                $word->amount = $amount;
+
+                $id = Infinitive::checkInfinitive($infinitive_translate);
+
+                if($id) {
+                    $infinitive = Infinitive::findOne($id);
+                    $infinitive->updateCounters(['amount' => 1]);
+                } else {
+                    $infinitive = new Infinitive();
+                    $infinitive->infinitive = $infinitive_translate;
+                    $infinitive->amount = $word->amount;
+                    $infinitive->user_id = Yii::$app->user->id;
+                    $infinitive->save();
+                }
+
+                $word->infinitive_id = $infinitive->id;
+                $word->save();
+            }
+        }
+    }
+
+    public static function parseTextToWords($text)
     {
         $words = [];
 
