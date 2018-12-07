@@ -57,11 +57,14 @@ class Study extends \yii\db\ActiveRecord
         return $this->hasOne(Infinitive::className(), ['id' => 'infinitive_id']);
     }
 
-    public function addToStudy($word_id)
+    /**
+     * @param int $word_id
+     */
+    public function addToStudy(int $word_id): void
     {
         $infinitive_id = Word::find()
             ->innerJoinWith('infinitive')
-            ->where('word.id = '.$word_id)
+            ->where(['word.id' => $word_id])
             ->asArray()
             ->one();
 
@@ -71,12 +74,15 @@ class Study extends \yii\db\ActiveRecord
         $this->save();
     }
 
-    public static function removeFromStudy($id)
+    /**
+     * @param $id
+     */
+    public static function removeFromStudy(int $id): void
     {
         $study = self::find()
-            ->where('infinitive_id='.$id)
-            ->andWhere('user_id='.\Yii::$app->user->id)
-            ->andWhere('status=1')
+            ->where(['infinitive_id' => $id])
+            ->andWhere(['user_id' => Yii::$app->user->id])
+            ->andWhere(['status' => 1])
             ->one();
         $study->status = self::STATUS_STUDIED;
         $study->save();

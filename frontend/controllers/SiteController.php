@@ -1,10 +1,7 @@
 <?php
 namespace frontend\controllers;
 
-use app\models\Infinitive;
-use app\models\Sentence;
 use app\models\Text;
-use app\models\Word;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -17,8 +14,6 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
-use app\models\Translate;
-use yii\helpers\ArrayHelper;
 
 /**
  * Site controller

@@ -10,14 +10,14 @@ namespace frontend\controllers;
 
 use app\models\Infinitive;
 use app\models\Study;
-use app\models\Translate;
 use app\models\Word;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
-use Yii;
 
 class LearningController extends Controller
 {
+    /**
+     * @return string
+     */
     public function actionIndex()
     {
         if(\Yii::$app->user->isGuest) {
@@ -31,6 +31,9 @@ class LearningController extends Controller
         return $this->render('index', ['words' => $words, 'percent' => $percent]);
     }
 
+    /**
+     * @return string
+     */
     public function actionAdd()
     {
         $words = Word::findNewWords();
@@ -38,26 +41,31 @@ class LearningController extends Controller
         return $this->render('add', ['words' => $words]);
     }
 
-    public function actionStudy($word_id)
+    /**
+     * @param $word_id
+     */
+    public function actionStudy(int $word_id)
     {
         $study = new Study();
         $study->addToStudy($word_id);
     }
 
+    /**
+     * @return false|string
+     */
     public function actionRandomWord()
     {
-        $words = Infinitive::findInfinitivesToStudy();
-        if(empty($words)) {
-            return json_encode($words, JSON_UNESCAPED_UNICODE);
-        } else {
-            $random = array_rand($words);
-            $translate = Translate::translate($words[$random]['infinitive']);
-            $words[$random]['translate'] = $translate[$words[$random]['infinitive']]['def'][0]['tr'][0]['text'];
-            return json_encode($words[$random], JSON_UNESCAPED_UNICODE);
-        }
+        $words = Infinitive::getRandomWordForJson();
+
+        return json_encode($words, JSON_UNESCAPED_UNICODE);
     }
 
-    public function actionKnow($infinitive_id, $status)
+    /**
+     * @param $infinitive_id
+     * @param $status
+     * @return false|string
+     */
+    public function actionKnow(int $infinitive_id, int $status)
     {
         if($status == 0){
             return self::actionRandomWord();

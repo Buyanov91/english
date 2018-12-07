@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "word".
@@ -10,6 +11,7 @@ use Yii;
  * @property int $id
  * @property string $word
  * @property int $sentence_id
+ * * @property int $infinitive_id
  * @property int $amount
  *
  * @property Infinitive[] $infinitives
@@ -76,18 +78,36 @@ class Word extends \yii\db\ActiveRecord
         return $this->hasOne(Sentence::className(), ['id' => 'sentence_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getText()
     {
         return $this->hasOne(Text::className(), ['id' => 'text_id'])
             ->viaTable('sentence', ['id' => 'sentence_id']);
     }
 
-    public static function findPopularInfinitives()
+    /**
+     * @param string $word
+     * @param int $amount
+     * @param int $sentence_id
+     */
+    public function updateAttributesFromSentences(string $word, int $amount, int $sentence_id): void
+    {
+        $this->word = $word;
+        $this->amount = $amount;
+        $this->sentence_id = $sentence_id;
+    }
+
+    /**
+     * @return array
+     */
+    public static function findPopularInfinitives(): array
     {
         $infinitives = self::find()
             ->innerJoinWith('infinitive')
             ->innerJoinWith('sentence')
-            ->where('infinitive.user_id = '.\Yii::$app->user->id)
+            ->where(['infinitive.user_id' => Yii::$app->user->id])
             ->groupBy('infinitive.id')
             ->orderBy('infinitive.amount DESC')
             ->limit(20)
@@ -95,7 +115,10 @@ class Word extends \yii\db\ActiveRecord
         return $infinitives;
     }
 
-    public static function findNewWords()
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public static function findNewWords(): array
     {
         $words = self::find()
             ->select('word.*, sentence.sentence')

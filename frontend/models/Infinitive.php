@@ -12,6 +12,7 @@ use common\models\User;
  * @property int $word_id
  * @property string $infinitive
  * @property int $amount
+ * @property int $user_id
  *
  * @property Attempt[] $attempts
  * @property Word $word
@@ -83,7 +84,21 @@ class Infinitive extends \yii\db\ActiveRecord
         return $this->hasMany(Study::className(), ['infinitive_id' => 'id']);
     }
 
-    public static function checkInfinitive($infinitive)
+    public function updateAttributesFromWord(string $infinitive, int $amount): void
+    {
+        if(!self::checkInfinitiveExists($infinitive)){
+            $this->infinitive = $infinitive;
+            $this->amount = $amount;
+            $this->user_id = Yii::$app->user->id;
+            $this->save();
+        }
+    }
+
+    /**
+     * @param string $infinitive
+     * @return bool
+     */
+    public static function checkInfinitiveExists(string $infinitive): bool
     {
         $infinitives = Infinitive::find()
             ->where('user_id = '.Yii::$app->user->id)
@@ -93,14 +108,26 @@ class Infinitive extends \yii\db\ActiveRecord
 
         foreach ($infinitives as $value){
             if($infinitive === $value['infinitive']){
-                return $value['id'];
-            } else {
-                continue;
+                self::updateAmount($value['id']);
+                return true;
             }
         }
+        return false;
     }
 
-    public static function findInfinitivesToStudy()
+    /**
+     * @param int $id
+     */
+    private static function updateAmount(int $id):void
+    {
+        $infinitive = self::findOne($id);
+        $infinitive->updateCounters(['amount' => 1]);
+    }
+
+    /**
+     * @return array
+     */
+    public static function findInfinitivesToStudy(): array
     {
         $infinitives = self::find()
             ->innerJoinWith('study')
@@ -111,7 +138,10 @@ class Infinitive extends \yii\db\ActiveRecord
         return $infinitives;
     }
 
-    public static function calcPercentStudiedWords()
+    /**
+     * @return float
+     */
+    public static function calcPercentStudiedWords(): float
     {
         $count_study = self::find()
             ->innerJoinWith('study')
@@ -124,5 +154,31 @@ class Infinitive extends \yii\db\ActiveRecord
         $percent = round($count_study/$count_all*100, 1);
 
         return $percent;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRandomWordForJson(): array
+    {
+        $words = self::findInfinitivesToStudy();
+
+        if(empty($words)) {
+            $words = [''];
+            return $words;
+        } else {
+            $random = array_rand($words);
+
+            $translate = new Translate($words[$random]['infinitive']);
+            $translate->translate(Translate::ENG_TO_RUS);
+
+            $words = [
+                'id' => $words[$random]['id'],
+                'infinitive' => $words[$random]['infinitive'],
+                'translate' => $translate->translate
+            ];
+
+            return $words;
+        }
     }
 }

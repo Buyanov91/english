@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "sentence".
  *
@@ -65,9 +63,15 @@ class Sentence extends \yii\db\ActiveRecord
         return $this->hasMany(Word::className(), ['sentence_id' => 'id']);
     }
 
-    public static function saveSentence($sentence)
+    /**
+     * @param int $text_id
+     * @param string $sentence
+     */
+    public function updateAttributesFromText(int $text_id, string $sentence): void
     {
-
+        $this->sentence = $sentence;
+        $this->text_id = $text_id;
+        $this->save();
     }
 
 }
