@@ -12,7 +12,6 @@ use common\models\User;
  * @property int $word_id
  * @property string $infinitive
  * @property int $amount
- * @property int $user_id
  *
  * @property Attempt[] $attempts
  * @property Word $word
@@ -34,10 +33,9 @@ class Infinitive extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['infinitive', 'amount', 'user_id'], 'required'],
+            [['infinitive', 'amount'], 'required'],
             [['amount'], 'integer'],
             [['infinitive'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -48,15 +46,9 @@ class Infinitive extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'USER',
             'infinitive' => 'Infinitive',
             'amount' => 'Amount',
         ];
-    }
-
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -89,7 +81,6 @@ class Infinitive extends \yii\db\ActiveRecord
         if(!self::checkInfinitiveExists($infinitive)){
             $this->infinitive = $infinitive;
             $this->amount = $amount;
-            $this->user_id = Yii::$app->user->id;
             $this->save();
         }
     }
@@ -100,15 +91,15 @@ class Infinitive extends \yii\db\ActiveRecord
      */
     public static function checkInfinitiveExists(string $infinitive): bool
     {
-        $infinitives = Infinitive::find()
-            ->where('user_id = '.Yii::$app->user->id)
-            ->orderBy('id')
-            ->asArray()
+        $infinitives = Word::find()
+            ->innerJoinWith('infinitive')
+            ->innerJoinWith('text')
+            ->where(['text.user_id' => Yii::$app->user->id])
+            ->groupBy('infinitive.id')
             ->all();
-
         foreach ($infinitives as $value){
-            if($infinitive === $value['infinitive']){
-                self::updateAmount($value['id']);
+            if($infinitive === $value->infinitive->infinitive){
+                self::updateAmount($value->infinitive->id);
                 return true;
             }
         }
@@ -150,8 +141,12 @@ class Infinitive extends \yii\db\ActiveRecord
             ->count();
 
         $count_all = self::find()->count();
+        if($count_all != 0) {
+            $percent = round($count_study/$count_all*100, 1);
+        } else {
+            $percent = 0;
+        }
 
-        $percent = round($count_study/$count_all*100, 1);
 
         return $percent;
     }

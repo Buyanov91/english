@@ -9,6 +9,7 @@ use common\models\User;
  *
  * @property int $user_id
  * @property int $attempts_to_study
+ * @property int $lang
  *
  * @property User $user
  */
@@ -28,8 +29,8 @@ class Settings extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'attempts_to_study'], 'required'],
-            [['user_id', 'attempts_to_study'], 'integer'],
+            [['user_id'], 'required'],
+            [['user_id', 'attempts_to_study', 'lang'], 'integer'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -41,7 +42,8 @@ class Settings extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => 'User ID',
-            'attempts_to_study' => 'Attempts To Study',
+            'attempts_to_study' => 'Число попыток на перевод',
+            'lang' => 'Язык перевода'
         ];
     }
 

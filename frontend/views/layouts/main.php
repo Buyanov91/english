@@ -48,9 +48,12 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Изучение', 'url' => ['/learning/'], 'active' => $checkController('learning')];
         $menuItems[] = ['label' => 'Популярные Слова', 'url' => ['/popular/'], 'active' => $checkController('popular')];
         $menuItems[] = '<li>'
+            . Html::a('<i class="fas fa-cog"></i>', '/setting/index')
+            . '</li>';
+        $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
-                'Выйти (' . Yii::$app->user->identity->username . ')',
+                '<i class="fas fa-sign-out-alt"></i>',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()

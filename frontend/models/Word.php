@@ -106,8 +106,8 @@ class Word extends \yii\db\ActiveRecord
     {
         $infinitives = self::find()
             ->innerJoinWith('infinitive')
-            ->innerJoinWith('sentence')
-            ->where(['infinitive.user_id' => Yii::$app->user->id])
+            ->innerJoinWith('text')
+            ->where(['text.user_id' => Yii::$app->user->id])
             ->groupBy('infinitive.id')
             ->orderBy('infinitive.amount DESC')
             ->limit(20)

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use common\models\User;
 
 /**
  * This is the model class for table "profile".
@@ -11,6 +11,7 @@ use Yii;
  * @property string $firstname
  * @property string $lastname
  * @property int $age
+ * @property int $avatar
  *
  * @property User $user
  */
@@ -30,9 +31,9 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'firstname', 'lastname', 'age'], 'required'],
+            [['user_id'], 'required'],
             [['user_id', 'age'], 'integer'],
-            [['firstname', 'lastname'], 'string', 'max' => 255],
+            [['firstname', 'lastname', 'avatar'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -43,10 +44,10 @@ class Profile extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => 'User ID',
-            'firstname' => 'Firstname',
-            'lastname' => 'Lastname',
-            'age' => 'Age',
+            'firstname' => 'Имя',
+            'lastname' => 'Фамилия',
+            'age' => 'Возраст',
+            'avatar' => 'Фото'
         ];
     }
 

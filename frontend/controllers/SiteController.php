@@ -98,7 +98,7 @@ class SiteController extends Controller
 
             if($text->save()) {
               $text->parseText();
-              return $this->goHome();
+//              return $this->goHome();
             }
         }
         return $this->render('index', ['text' => $text, 'file' => $file]);
