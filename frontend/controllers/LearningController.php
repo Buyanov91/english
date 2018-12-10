@@ -44,7 +44,7 @@ class LearningController extends Controller
     /**
      * @param $word_id
      */
-    public function actionStudy(int $word_id)
+    public function actionStudy(int $word_id): void
     {
         $study = new Study();
         $study->addToStudy($word_id);
