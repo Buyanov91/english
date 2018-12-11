@@ -12,7 +12,7 @@ class m181210_121313_add_avatar_to_profile extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('profile', 'avatar', $this->string());
+        $this->addColumn('profile', 'avatar', $this->string()->defaultValue(null));
     }
 
     /**

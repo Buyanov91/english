@@ -48,7 +48,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Изучение', 'url' => ['/learning/'], 'active' => $checkController('learning')];
         $menuItems[] = ['label' => 'Популярные Слова', 'url' => ['/popular/'], 'active' => $checkController('popular')];
         $menuItems[] = '<li>'
-            . Html::a('<i class="fas fa-cog"></i>', '/setting/index')
+            . Html::a('<i class="fas fa-cog"></i>', '/setting')
             . '</li>';
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')

@@ -54,4 +54,15 @@ class Settings extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
+    public static function primaryKey()
+    {
+        return ['user_id'];
+    }
+
+
+    public function updateAttributesFromForm(): void
+    {
+        $this->user_id = \Yii::$app->user->id;
+    }
 }
