@@ -64,5 +64,6 @@ class Settings extends \yii\db\ActiveRecord
     public function updateAttributesFromForm(): void
     {
         $this->user_id = \Yii::$app->user->id;
+        $this->save();
     }
 }

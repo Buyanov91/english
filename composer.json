@@ -19,8 +19,7 @@
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "ext-json": "^1.6",
-        "bower-asset/font-awesome": "^5.5",
-        "kartik-v/yii2-widget-fileinput": "@dev"
+        "bower-asset/font-awesome": "^5.5"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

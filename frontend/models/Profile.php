@@ -3,7 +3,6 @@
 namespace app\models;
 
 use common\models\User;
-use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "profile".
@@ -18,6 +17,7 @@ use yii\web\UploadedFile;
  */
 class Profile extends \yii\db\ActiveRecord
 {
+    private $path = 'uploads/';
     /**
      * {@inheritdoc}
      */
@@ -65,18 +65,15 @@ class Profile extends \yii\db\ActiveRecord
         return ['user_id'];
     }
 
-    public function updateAttributesFromForm(?UploadedFile $avatar): void
+    public function updateAttributesFromForm(string $old_avatar, ?UploadImage $avatar): void
     {
-        $path = \Yii::$app->params['pathUploads'];
         $this->user_id = \Yii::$app->user->id;
-        if(!empty($avatar)){
-            $avatar->saveAs($path . $avatar->name);
-            $this->avatar = $path . $avatar->name;
+        if(!empty($avatar->file)){
+            $avatar->upload();
+            $this->avatar = $this->path . $avatar->file->name;
         } else {
-            if(!empty($this->avatar)){
-                unlink($this->avatar);
-                $this->avatar = '';
-            }
+            $this->avatar = $old_avatar;
         }
+        $this->save();
     }
 }

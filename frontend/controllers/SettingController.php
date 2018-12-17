@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use app\models\Profile;
 use app\models\Settings;
+use app\models\UploadImage;
 use Yii;
 use yii\web\UploadedFile;
 
@@ -14,6 +15,9 @@ class SettingController extends \yii\web\Controller
         $profile = Profile::find()->where(['user_id' => Yii::$app->user->id])->one();
         $settings = Settings::find()->where(['user_id' => Yii::$app->user->id])->one();
 
+        $avatar = new UploadImage();
+        $old_avatar = $profile->avatar;
+
         if(empty($profile)){
             $profile = new Profile();
         }
@@ -22,15 +26,15 @@ class SettingController extends \yii\web\Controller
         }
 
         if(Yii::$app->request->isPost){
-            $avatar = UploadedFile::getInstance($profile, 'avatar');
+            $avatar->file = UploadedFile::getInstance($profile, 'avatar');
 
-            if($profile->load(Yii::$app->request->post())){
-                $profile->updateAttributesFromForm($avatar);
-                $profile->save();
+            if($profile->load(Yii::$app->request->post())) {
+                $profile->updateAttributesFromForm($old_avatar, $avatar);
             }
+
             if($settings->load(Yii::$app->request->post())){
                 $settings->updateAttributesFromForm();
-                $settings->save();
+
             }
 
             $this->refresh();

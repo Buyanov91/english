@@ -2,20 +2,31 @@
 /* @var $this yii\web\View */
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
-use kartik\file\FileInput;
 ?>
 
 <div class="container">
     <h2>Пользователь <b><?= Yii::$app->user->identity->username ?></b></h2>
 </div>
-
+<br>
 <?php $form = ActiveForm::begin(['id' => 'profile']); ?>
 
 <div class="col-md-4">
+    <?php if (empty($profile->avatar)) : ?>
 
-    <?= $form->field($profile, 'avatar')->widget(FileInput::classname(), [
-            'options' => ['accept' => 'image/*'], 'language' => 'ru'
-        ]); ?>
+        <div class="image">
+            <?= Html::img('images/avatar.png', ['alt' => 'Фото'])?>
+        </div>
+
+    <?php else: ?>
+
+        <div class="image">
+            <?= Html::img($profile->avatar, ['alt' => 'Фото'])?>
+        </div>
+
+    <?php endif; ?>
+
+    <?= $form->field($profile, 'avatar')->fileInput()->label(false); ?>
+
     <br>
     <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-lg', 'name' => 'login-button']) ?>
 

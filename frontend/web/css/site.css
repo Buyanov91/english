@@ -159,3 +159,17 @@ a:hover {
 .hide-end-button {
     display: none;
 }
+
+.image {
+    display: inline-block;
+    height: 350px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.image img {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
