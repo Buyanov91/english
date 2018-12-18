@@ -46,10 +46,11 @@ use yii\helpers\Html;
             '1' => 'С Русского на Английский'
     ]) ?>
 
-    <?= $form->field($settings, 'attempts_to_study')->dropDownList([
-        '1' => '1',
+    <?= $form->field($settings, 'attempts')->dropDownList([
         '2' => '2',
-        '3' => '3'
+        '3' => '3',
+        '4' => '4',
+        '5' => '5'
     ]) ?>
 
 </div>

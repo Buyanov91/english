@@ -5,22 +5,22 @@ namespace app\models;
 use common\models\User;
 
 /**
- * This is the model class for table "settings".
+ * This is the model class for table "setting".
  *
  * @property int $user_id
- * @property int $attempts_to_study
+ * @property int $attempts
  * @property int $lang
  *
  * @property User $user
  */
-class Settings extends \yii\db\ActiveRecord
+class Setting extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'settings';
+        return 'setting';
     }
 
     /**
@@ -30,7 +30,7 @@ class Settings extends \yii\db\ActiveRecord
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'attempts_to_study', 'lang'], 'integer'],
+            [['user_id', 'attempts', 'lang'], 'integer'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -42,7 +42,7 @@ class Settings extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => 'User ID',
-            'attempts_to_study' => 'Число попыток на перевод',
+            'attempts' => 'Количество вариантов ответа',
             'lang' => 'Язык перевода'
         ];
     }

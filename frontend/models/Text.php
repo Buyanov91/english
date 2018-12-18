@@ -144,14 +144,11 @@ class Text extends \yii\db\ActiveRecord
                 $translate = new Translate($newWord);
                 $translate->translate(Translate::ENG_TO_ENG);
 
-                $word = new Word();
-                $word->updateAttributesFromSentences($newWord, $amount, $sentence->id);
-
                 $infinitive = new Infinitive();
-                $infinitive->updateAttributesFromWord($translate->infinitive, $word->amount);
+                $infinitive->updateAttributesFromWord($translate->infinitive, $amount);
 
-                $word->infinitive_id = $infinitive->id;
-                $word->save();
+                $word = new Word();
+                $word->updateAttributesFromSentences($newWord, $sentence->id, $infinitive->id);
             }
         }
     }
@@ -166,16 +163,16 @@ class Text extends \yii\db\ActiveRecord
 
         $symbols = array('!',',','.','\'','"','-',':',';','?',"\r",'(',')');
 
-        $text = str_replace($symbols, '', $text);     # Удаляем из текста ненужные символы
+        $text = str_replace($symbols, '', $text);
 
-        $text = str_replace("\n", ' ', $text);    # Заменяем переносы строк на пробелы
+        $text = str_replace("\n", ' ', $text);
 
-        $text_array = explode(' ',$text);    # 'Разрезаем' текст на слова
+        $text_array = explode(' ',$text);
 
-        foreach($text_array as $val){     # Переберем слова и исключим дубликаты
+        foreach($text_array as $val){
             if($val==''){continue;}
             $val = strtolower($val);
-            if(array_key_exists($val, $words)){     # Если такое слово уже есть в массиве, увеличим счетчик
+            if(array_key_exists($val, $words)){
                 $words[$val]++;
             } else {
                 $words[$val] = 1;

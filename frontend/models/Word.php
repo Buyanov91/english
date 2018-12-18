@@ -11,8 +11,7 @@ use yii\helpers\Json;
  * @property int $id
  * @property string $word
  * @property int $sentence_id
- * * @property int $infinitive_id
- * @property int $amount
+ * @property int $infinitive_id
  *
  * @property Infinitive[] $infinitives
  * @property Sentence $sentence
@@ -33,23 +32,11 @@ class Word extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['word', 'sentence_id', 'amount', 'infinitive_id'], 'required'],
-            [['sentence_id', 'amount', 'infinitive_id'], 'integer'],
+            [['word', 'sentence_id', 'infinitive_id'], 'required'],
+            [['sentence_id', 'infinitive_id'], 'integer'],
             [['word'], 'string', 'max' => 255],
             [['sentence_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sentence::className(), 'targetAttribute' => ['sentence_id' => 'id']],
             [['infinitive_id'], 'exist', 'skipOnError' => true, 'targetClass' => Infinitive::className(), 'targetAttribute' => ['infinitive_id' => 'id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'word' => 'Word',
-            'amount' => 'Amount',
         ];
     }
 
@@ -89,14 +76,15 @@ class Word extends \yii\db\ActiveRecord
 
     /**
      * @param string $word
-     * @param int $amount
+     * @param int $infinitive_id
      * @param int $sentence_id
      */
-    public function updateAttributesFromSentences(string $word, int $amount, int $sentence_id): void
+    public function updateAttributesFromSentences(string $word, int $sentence_id, int $infinitive_id): void
     {
         $this->word = $word;
-        $this->amount = $amount;
         $this->sentence_id = $sentence_id;
+        $this->infinitive_id = $infinitive_id;
+        $this->save();
     }
 
     /**

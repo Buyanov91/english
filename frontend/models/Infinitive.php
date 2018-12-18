@@ -3,17 +3,15 @@
 namespace app\models;
 
 use Yii;
-use common\models\User;
 
 /**
  * This is the model class for table "infinitive".
  *
  * @property int $id
- * @property int $word_id
  * @property string $infinitive
+ * @property string $translate
  * @property int $amount
  *
- * @property Attempt[] $attempts
  * @property Word $word
  * @property Study[] $studies
  */
@@ -35,28 +33,8 @@ class Infinitive extends \yii\db\ActiveRecord
         return [
             [['infinitive', 'amount'], 'required'],
             [['amount'], 'integer'],
-            [['infinitive'], 'string', 'max' => 255],
+            [['infinitive', 'translate'], 'string', 'max' => 255],
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'infinitive' => 'Infinitive',
-            'amount' => 'Amount',
-        ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAttempts()
-    {
-        return $this->hasMany(Attempt::className(), ['infinitive_id' => 'id']);
     }
 
     /**
@@ -76,20 +54,22 @@ class Infinitive extends \yii\db\ActiveRecord
         return $this->hasMany(Study::className(), ['infinitive_id' => 'id']);
     }
 
-    public function updateAttributesFromWord(string $infinitive, int $amount): void
+    public function updateAttributesFromWord(string $infinitive, int $amount)
     {
-        if(!self::checkInfinitiveExists($infinitive)){
+        $check = self::checkInfinitiveExists($infinitive);
+        if($check === null){
             $this->infinitive = $infinitive;
             $this->amount = $amount;
             $this->save();
         }
+        return $check;
     }
 
     /**
      * @param string $infinitive
-     * @return bool
+     * @return Infinitive|null
      */
-    public static function checkInfinitiveExists(string $infinitive): bool
+    public static function checkInfinitiveExists(string $infinitive) : ?Infinitive
     {
         $infinitives = Word::find()
             ->innerJoinWith('infinitive')
@@ -99,20 +79,22 @@ class Infinitive extends \yii\db\ActiveRecord
             ->all();
         foreach ($infinitives as $value){
             if($infinitive === $value->infinitive->infinitive){
-                self::updateAmount($value->infinitive->id);
-                return true;
+
+                return self::updateAmount($value->infinitive->id);
             }
         }
-        return false;
+        return null;
     }
 
     /**
      * @param int $id
+     * @return Infinitive
      */
-    private static function updateAmount(int $id):void
+    private static function updateAmount(int $id) : Infinitive
     {
         $infinitive = self::findOne($id);
         $infinitive->updateCounters(['amount' => 1]);
+        return $infinitive;
     }
 
     /**

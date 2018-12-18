@@ -3,7 +3,7 @@
 namespace frontend\controllers;
 
 use app\models\Profile;
-use app\models\Settings;
+use app\models\Setting;
 use app\models\UploadImage;
 use Yii;
 use yii\web\UploadedFile;
@@ -16,7 +16,7 @@ class SettingController extends MainController
     public function actionIndex()
     {
         $profile = Profile::find()->where(['user_id' => Yii::$app->user->id])->one();
-        $settings = Settings::find()->where(['user_id' => Yii::$app->user->id])->one();
+        $settings = Setting::find()->where(['user_id' => Yii::$app->user->id])->one();
 
         $avatar = new UploadImage();
         $old_avatar = '';
@@ -29,7 +29,7 @@ class SettingController extends MainController
             $profile = new Profile();
         }
         if(empty($settings)){
-            $settings = new Settings();
+            $settings = new Setting();
         }
 
         if(Yii::$app->request->isPost){

@@ -49,6 +49,11 @@ class Study extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function primaryKey()
+    {
+        return ['user_id'];
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
