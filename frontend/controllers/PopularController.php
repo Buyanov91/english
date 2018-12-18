@@ -9,9 +9,8 @@
 namespace frontend\controllers;
 
 use app\models\Word;
-use yii\web\Controller;
 
-class PopularController extends Controller
+class PopularController extends MainController
 {
     public function actionIndex()
     {

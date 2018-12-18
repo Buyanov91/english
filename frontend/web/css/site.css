@@ -173,3 +173,8 @@ a:hover {
     margin: 0;
     padding: 0;
 }
+
+#load-btn, #back, #back-file, #load-file-btn {
+    width: 180px;
+    margin-bottom: 5px;
+}

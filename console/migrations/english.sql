@@ -48,27 +48,6 @@ CREATE TABLE `infinitive` (
   `amount` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Структура таблицы `migration`
---
-
-CREATE TABLE `migration` (
-  `version` varchar(180) NOT NULL,
-  `apply_time` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `migration`
---
-
-INSERT INTO `migration` (`version`, `apply_time`) VALUES
-('m000000_000000_base', 1540450332),
-('m130524_201442_init', 1540450337);
-
--- --------------------------------------------------------
-
 --
 -- Структура таблицы `profile`
 --
@@ -132,24 +111,6 @@ CREATE TABLE `text` (
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `user`
---
-
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password_reset_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `status` smallint(6) NOT NULL DEFAULT '10',
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `word`
 --
 
@@ -177,12 +138,6 @@ ALTER TABLE `attempt`
 ALTER TABLE `infinitive`
   ADD PRIMARY KEY (`id`),
   ADD KEY `word_id` (`word_id`);
-
---
--- Индексы таблицы `migration`
---
-ALTER TABLE `migration`
-  ADD PRIMARY KEY (`version`);
 
 --
 -- Индексы таблицы `profile`
@@ -217,15 +172,6 @@ ALTER TABLE `text`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Индексы таблицы `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `password_reset_token` (`password_reset_token`);
-
---
 -- Индексы таблицы `word`
 --
 ALTER TABLE `word`
@@ -252,12 +198,6 @@ ALTER TABLE `sentence`
 -- AUTO_INCREMENT для таблицы `text`
 --
 ALTER TABLE `text`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT для таблицы `user`
---
-ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --

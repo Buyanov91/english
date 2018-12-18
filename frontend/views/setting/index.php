@@ -1,5 +1,9 @@
 <?php
-/* @var $this yii\web\View */
+/**
+ * @var $this yii\web\View
+ * @var $profile
+ * @var $settings
+ */
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 ?>
@@ -27,14 +31,11 @@ use yii\helpers\Html;
 
     <?= $form->field($profile, 'avatar')->fileInput()->label(false); ?>
 
-    <br>
-    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-lg', 'name' => 'login-button']) ?>
-
 </div>
 
 <div class="col-md-offset-1 col-md-6">
 
-    <?= $form->field($profile, 'firstname')->textInput(['autofocus' => true]) ?>
+    <?= $form->field($profile, 'firstname')->textInput() ?>
 
     <?= $form->field($profile, 'lastname')->textInput() ?>
 
@@ -51,6 +52,12 @@ use yii\helpers\Html;
         '3' => '3'
     ]) ?>
 
+</div>
+
+<div class="clearfix"></div>
+
+<div class="container">
+    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-lg', 'name' => 'login-button']) ?>
 </div>
 
 <?php ActiveForm::end(); ?>

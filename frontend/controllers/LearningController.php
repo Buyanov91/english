@@ -11,9 +11,8 @@ namespace frontend\controllers;
 use app\models\Infinitive;
 use app\models\Study;
 use app\models\Word;
-use yii\web\Controller;
 
-class LearningController extends Controller
+class LearningController extends MainController
 {
     /**
      * @return string

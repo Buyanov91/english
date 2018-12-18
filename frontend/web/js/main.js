@@ -1,6 +1,10 @@
 (function () {
     'use strict';
 
+/**
+ * Main page animation
+ */
+
 $('#main-btn').click(function () {
     $('#download').fadeOut(0);
     $('#show-btn').fadeIn();
@@ -15,6 +19,30 @@ $('#file').click(function () {
     $('#show-btn').fadeOut(0);
     $('#upload-file-form').fadeIn();
 });
+
+$('#load-btn').click(function () {
+    $('#load-btn').html('<i class="fas fa-circle-notch fa-spin"></i>');
+});
+
+$('#load-file-btn').click(function () {
+    $('#load-file-btn').html('<i class="fas fa-circle-notch fa-spin"></i>');
+});
+
+$('#back').click(function () {
+    $('#upload-file-form').fadeOut(0);
+    $('#upload-text-form').fadeOut(0);
+    $('#show-btn').fadeIn();
+});
+
+$('#back-file').click(function () {
+    $('#upload-file-form').fadeOut(0);
+    $('#upload-text-form').fadeOut(0);
+    $('#show-btn').fadeIn();
+});
+
+/**
+ * Translate ajax
+ */
 
 $('.word-link').bind('click', function (e) {
     e.preventDefault();

@@ -43,7 +43,8 @@ $this->title = 'English';
                                 'placeholder' => 'Напишите или скопируйте Ваш текст'])->label(false) ?>
                         </div>
                         <div class="form-group col-md-4">
-                            <?= Html::submitButton('Загрузить', ['class' => 'btn btn-primary']) ?>
+                            <?= Html::submitButton('Загрузить', ['id' => 'load-btn', 'class' => 'btn btn-primary']) ?>
+                            <?= Html::button('Назад', ['id' => 'back', 'class' => 'btn btn-secondary']) ?>
                         </div>
                     </div>
 
@@ -56,7 +57,8 @@ $this->title = 'English';
                             <?= $form->field($file, 'file')->fileInput()->label(false) ?>
                         </div>
                         <div class="form-group col-md-4">
-                            <?= Html::submitButton('Загрузить', ['class' => 'btn btn-primary']) ?>
+                            <?= Html::submitButton('Загрузить', ['id' => 'load-file-btn', 'class' => 'btn btn-primary']) ?>
+                            <?= Html::button('Назад', ['id' => 'back-file', 'class' => 'btn btn-secondary']) ?>
                         </div>
                     </div>
 

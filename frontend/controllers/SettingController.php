@@ -8,15 +8,22 @@ use app\models\UploadImage;
 use Yii;
 use yii\web\UploadedFile;
 
-class SettingController extends \yii\web\Controller
+class SettingController extends MainController
 {
+        /**
+     * @return string
+     */
     public function actionIndex()
     {
         $profile = Profile::find()->where(['user_id' => Yii::$app->user->id])->one();
         $settings = Settings::find()->where(['user_id' => Yii::$app->user->id])->one();
 
         $avatar = new UploadImage();
-        $old_avatar = $profile->avatar;
+        $old_avatar = '';
+
+        if (isset($profile->avatar)) {
+            $old_avatar = $profile->avatar;
+        }
 
         if(empty($profile)){
             $profile = new Profile();

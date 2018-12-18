@@ -14,6 +14,6 @@ class FontAwesomeAsset extends AssetBundle
 {
     public $sourcePath = '@bower/font-awesome';
     public $css = [
-        'web-fonts-with-css/css/fontawesome-all.css',
+        'css/all.css',
     ];
 }
