@@ -142,10 +142,10 @@ class Text extends \yii\db\ActiveRecord
             foreach ($words as $newWord => $amount) {
 
                 $translate = new Translate($newWord);
-                $translate->translate(Translate::ENG_TO_ENG);
+                $translate->translate(Translate::ENG_TO_RUS);
 
                 $infinitive = new Infinitive();
-                $infinitive->updateAttributesFromWord($translate->infinitive, $amount);
+                $infinitive->updateAttributesFromWord($translate->infinitive, $translate->translate, $amount);
 
                 $word = new Word();
                 $word->updateAttributesFromSentences($newWord, $sentence->id, $infinitive->id);

@@ -14,11 +14,7 @@ class PopularController extends MainController
 {
     public function actionIndex()
     {
-        if(\Yii::$app->user->isGuest) {
-            return $this->render('/site/index');
-        }
-
-        $words = Word::findPopularInfinitives();
+        $words = Word::findPopular();
 
         return $this->render('index', ['words' => $words]);
     }

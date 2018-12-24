@@ -17,6 +17,8 @@ use Yii;
  */
 class Infinitive extends \yii\db\ActiveRecord
 {
+    public $id_if_exists;
+
     /**
      * {@inheritdoc}
      */
@@ -54,22 +56,27 @@ class Infinitive extends \yii\db\ActiveRecord
         return $this->hasMany(Study::className(), ['infinitive_id' => 'id']);
     }
 
-    public function updateAttributesFromWord(string $infinitive, int $amount)
+    /**
+     * @param string $infinitive
+     * @param string $translate
+     * @param int $amount
+     */
+    public function updateAttributesFromWord(string $infinitive, string $translate, int $amount): void
     {
-        $check = self::checkInfinitiveExists($infinitive);
-        if($check === null){
+        if(!self::checkInfinitiveExists($this, $infinitive)){
             $this->infinitive = $infinitive;
+            $this->translate = $translate;
             $this->amount = $amount;
             $this->save();
         }
-        return $check;
     }
 
     /**
      * @param string $infinitive
-     * @return Infinitive|null
+     * @param Infinitive $object
+     * @return bool
      */
-    public static function checkInfinitiveExists(string $infinitive) : ?Infinitive
+    public static function checkInfinitiveExists(Infinitive $object, string $infinitive) : bool
     {
         $infinitives = Word::find()
             ->innerJoinWith('infinitive')
@@ -79,11 +86,12 @@ class Infinitive extends \yii\db\ActiveRecord
             ->all();
         foreach ($infinitives as $value){
             if($infinitive === $value->infinitive->infinitive){
-
-                return self::updateAmount($value->infinitive->id);
+                self::updateAmount($value->infinitive->id);
+                $object->id = $value->infinitive->id;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     /**
@@ -105,7 +113,7 @@ class Infinitive extends \yii\db\ActiveRecord
         $infinitives = self::find()
             ->innerJoinWith('study')
             ->where(['study.user_id' => Yii::$app->user->id])
-            ->andWhere(['study.status' => 1])
+            ->andWhere(['study.status' => Study::STATUS_STUDY])
             ->asArray()
             ->all();
         return $infinitives;
@@ -119,7 +127,7 @@ class Infinitive extends \yii\db\ActiveRecord
         $count_study = self::find()
             ->innerJoinWith('study')
             ->where(['study.user_id' => Yii::$app->user->id])
-            ->andWhere(['study.status' => 2])
+            ->andWhere(['study.status' => Study::STATUS_STUDIED])
             ->count();
 
         $count_all = self::find()->count();
@@ -129,8 +137,23 @@ class Infinitive extends \yii\db\ActiveRecord
             $percent = 0;
         }
 
-
         return $percent;
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    public static function findRandomInfinitives(int $id): array
+    {
+        $all = self::find()
+            ->select('id, infinitive, translate')
+            ->where('id!='.$id)
+            ->orderBy('RAND()')
+            ->limit(4)
+            ->asArray()
+            ->all();
+        return $all;
     }
 
     /**
@@ -143,19 +166,28 @@ class Infinitive extends \yii\db\ActiveRecord
         if(empty($words)) {
             $words = [''];
             return $words;
-        } else {
-            $random = array_rand($words);
-
-            $translate = new Translate($words[$random]['infinitive']);
-            $translate->translate(Translate::ENG_TO_RUS);
-
-            $words = [
-                'id' => $words[$random]['id'],
-                'infinitive' => $words[$random]['infinitive'],
-                'translate' => $translate->translate
-            ];
-
-            return $words;
         }
+
+        $random = array_rand($words);
+
+        $all = self::findRandomInfinitives($words[$random]['id']);
+
+        $all[] = [
+            'id' => $words[$random]['id'],
+            'infinitive' => $words[$random]['infinitive'],
+            'translate' => $words[$random]['translate']
+        ];
+
+        shuffle($all);
+
+        $words = [
+            'id' => $words[$random]['id'],
+            'infinitive' => $words[$random]['infinitive'],
+            'translate' => $words[$random]['translate'],
+            'mistakes' => $all
+        ];
+
+        return $words;
     }
+
 }

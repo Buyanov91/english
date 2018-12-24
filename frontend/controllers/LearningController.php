@@ -19,10 +19,6 @@ class LearningController extends MainController
      */
     public function actionIndex()
     {
-        if(\Yii::$app->user->isGuest) {
-            return $this->render('/site/index');
-        }
-
         $words = Infinitive::findInfinitivesToStudy();
 
         $percent = Infinitive::calcPercentStudiedWords();
@@ -35,8 +31,7 @@ class LearningController extends MainController
      */
     public function actionAdd()
     {
-        $words = Word::findNewWords();
-
+        $words = Word::findToAdd();
         return $this->render('add', ['words' => $words]);
     }
 
@@ -55,22 +50,17 @@ class LearningController extends MainController
     public function actionRandomWord()
     {
         $words = Infinitive::getRandomWordForJson();
-
         return json_encode($words, JSON_UNESCAPED_UNICODE);
     }
 
-    /**
-     * @param $infinitive_id
-     * @param $status
-     * @return false|string
-     */
-    public function actionKnow(int $infinitive_id, int $status)
+
+    public function actionAnswer(int $infinitive_id, int $answer_id)
     {
-        if($status == 0){
-            return self::actionRandomWord();
-        } else {
+        if ($infinitive_id === $answer_id) {
             Study::removeFromStudy($infinitive_id);
             return self::actionRandomWord();
         }
+
+        return self::actionRandomWord();
     }
 }

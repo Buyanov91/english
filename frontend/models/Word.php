@@ -90,7 +90,7 @@ class Word extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public static function findPopularInfinitives(): array
+    public static function findPopular(): array
     {
         $infinitives = self::find()
             ->innerJoinWith('infinitive')
@@ -106,15 +106,16 @@ class Word extends \yii\db\ActiveRecord
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public static function findNewWords(): array
+    public static function findToAdd(): array
     {
         $words = self::find()
             ->select('word.*, sentence.sentence')
+            ->innerJoinWith('infinitive')
             ->innerJoinWith('text')
             ->with('study')
             ->where(['text.user_id' => Yii::$app->user->id])
-            ->orderBy('word.word')
-            ->groupBy('word.word')
+            ->orderBy('infinitive.infinitive')
+            ->groupBy('infinitive.id')
             ->asArray()
             ->all();
         return $words;

@@ -1,3 +1,31 @@
+function checkAnswer(id, answer_id) {
+    if (id === answer_id) {
+        $('.hide-study').fadeOut(0);
+        $('.hide-translate-true').fadeIn().delay(500).fadeOut();
+        var url = "href='/learning/answer?infinitive_id=" + id;
+        $.getJSON(url, function (data) {
+            if(!data)
+                location.reload();
+            $('#learn-word').html(data.infinitive);
+            $.each(data.mistakes, function (key, value) {
+                var div = document.createElement('div');
+                div.innerHTML = "<div class='col-md-2'>" +
+                    "<a id='translate' class='btn btn-info' " +
+                    "href='#' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
+                    value.translate + "</a>" +
+                    "</div>";
+                $('#translates').append(div);
+            });
+        });
+    } else {
+
+        $('.hide-study').fadeOut(0).delay(500).fadeIn();
+        $('.hide-translate-false').fadeIn().delay(200).fadeOut(0);
+
+    }
+
+}
+
 (function () {
     'use strict';
 
@@ -59,33 +87,18 @@ $('#learn').click(function (e) {
     var url = $(this).attr('href');
     $.getJSON(url, function (data) {
         $('#learn-word').html(data.infinitive);
-        $('#translate-word').html(data.translate);
-        $('#known').attr('href', 'learning/know?status=1&infinitive_id='+data.id);
-        $('#unknown').attr('href', 'learning/know?status=0&infinitive_id='+data.id);
+        $.each(data.mistakes, function (key, value) {
+            var div = document.createElement('div');
+            div.innerHTML = "<div class='col-md-2'>" +
+                                "<a id='translate' class='btn btn-info' " +
+                                "href='#' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
+                                value.translate + "</a>" +
+                            "</div>";
+           $('#translates').append(div);
+        });
         $('.main-study').fadeOut(0);
         $('.hide-study').fadeIn();
         $('.hide-end-button').fadeIn();
-    });
-});
-
-$('#translate').click(function () {
-    $('.hide-study').fadeOut(0);
-    $('.hide-translate').fadeIn();
-});
-
-$('#known, #unknown').click(function (e) {
-    e.preventDefault();
-    var url = $(this).attr('href');
-    $.getJSON(url, function (data) {
-        if(data == '') {
-            location.reload();
-        }
-        $('#learn-word').html(data.infinitive);
-        $('#translate-word').html(data.translate);
-        $('#known').attr('href', 'learning/know?status=1&infinitive_id='+data.id);
-        $('#unknown').attr('href', 'learning/know?status=0&infinitive_id='+data.id);
-        $('.hide-translate').fadeOut(0);
-        $('.hide-study').fadeIn();
     });
 });
 

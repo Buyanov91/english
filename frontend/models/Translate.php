@@ -18,10 +18,6 @@ class Translate
 
     const ENG_TO_RUS = 'en-ru';
 
-    const ENG_TO_ENG = 'en-en';
-
-    const RUS_TO_RUS = 'ru-ru';
-
     const KEY_TO_API = 'dict.1.1.20181102T061057Z.1cde8c000cfdc4f7.bd4e27863b0270a2fe2e1ea6d0f712faeefdfaa4';
 
     /** @var string translated word*/

@@ -48,7 +48,7 @@ class SiteController extends MainController
 
             if($text->save()) {
               $text->parseText();
-              return $this->goHome();
+//              return $this->goHome();
             }
         }
 

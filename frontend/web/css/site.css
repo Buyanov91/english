@@ -148,15 +148,7 @@ a:hover {
 .shadow small {
     float: right;
 }
-.hide-study {
-    display: none;
-}
-
-.hide-translate {
-    display: none;
-}
-
-.hide-end-button {
+.hide-study, .hide-translate-true, .hide-translate-false, .hide-end-button {
     display: none;
 }
 
@@ -177,4 +169,10 @@ a:hover {
 #load-btn, #back, #back-file, #load-file-btn {
     width: 180px;
     margin-bottom: 5px;
+}
+
+#translates a {
+    margin-top: 50px;
+    margin-left: 50px;
+    width: 150px;
 }
