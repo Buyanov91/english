@@ -51,7 +51,7 @@ class Study extends \yii\db\ActiveRecord
 
     public static function primaryKey()
     {
-        return ['user_id'];
+        return ['infinitive_id'];
     }
 
     /**
@@ -80,7 +80,9 @@ class Study extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param $id
+     * @param int $id
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public static function removeFromStudy(int $id): void
     {
@@ -88,9 +90,11 @@ class Study extends \yii\db\ActiveRecord
             ->where(['infinitive_id' => $id])
             ->andWhere(['user_id' => Yii::$app->user->id])
             ->andWhere(['status' => 1])
+            ->limit(1)
             ->one();
+
         $study->status = self::STATUS_STUDIED;
-        $study->save();
+        $study->update();
     }
 
 }

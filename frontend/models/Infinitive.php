@@ -142,15 +142,16 @@ class Infinitive extends \yii\db\ActiveRecord
 
     /**
      * @param int $id
+     * @param int $count
      * @return array
      */
-    public static function findRandomInfinitives(int $id): array
+    public static function findRandomInfinitives(int $id, int $count): array
     {
         $all = self::find()
             ->select('id, infinitive, translate')
             ->where('id!='.$id)
             ->orderBy('RAND()')
-            ->limit(4)
+            ->limit($count)
             ->asArray()
             ->all();
         return $all;
@@ -168,9 +169,11 @@ class Infinitive extends \yii\db\ActiveRecord
             return $words;
         }
 
+        $countVars = Setting::getCountVars();
+
         $random = array_rand($words);
 
-        $all = self::findRandomInfinitives($words[$random]['id']);
+        $all = self::findRandomInfinitives($words[$random]['id'], $countVars);
 
         $all[] = [
             'id' => $words[$random]['id'],

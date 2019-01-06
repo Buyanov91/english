@@ -42,7 +42,7 @@ $count = 0;
             <?php endforeach; ?>
         </div>
     <?php if($count === 0): ?>
-    <p class="text-muted">У Вас нет новых слов для изучения, либо перейдите к изучению, либо загрузите новые.</p>
+    <p class="text-muted">У Вас нет новых слов для изучения, перейдите к изучению или загрузите новые.</p>
     <?php endif; ?>
     <br>
     <?= Html::a('Вернуться к изучению', ['/learning'], ['class' => 'btn btn-lg btn-success']) ?>

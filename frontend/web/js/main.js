@@ -1,30 +1,3 @@
-function checkAnswer(id, answer_id) {
-    if (id === answer_id) {
-        $('.hide-study').fadeOut(0);
-        $('.hide-translate-true').fadeIn().delay(500).fadeOut();
-        var url = "href='/learning/answer?infinitive_id=" + id;
-        $.getJSON(url, function (data) {
-            if(!data)
-                location.reload();
-            $('#learn-word').html(data.infinitive);
-            $.each(data.mistakes, function (key, value) {
-                var div = document.createElement('div');
-                div.innerHTML = "<div class='col-md-2'>" +
-                    "<a id='translate' class='btn btn-info' " +
-                    "href='#' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
-                    value.translate + "</a>" +
-                    "</div>";
-                $('#translates').append(div);
-            });
-        });
-    } else {
-
-        $('.hide-study').fadeOut(0).delay(500).fadeIn();
-        $('.hide-translate-false').fadeIn().delay(200).fadeOut(0);
-
-    }
-
-}
 
 (function () {
     'use strict';
@@ -49,11 +22,11 @@ $('#file').click(function () {
 });
 
 $('#load-btn').click(function () {
-    $('#load-btn').html('<i class="fas fa-circle-notch fa-spin"></i>');
+    $('#load-btn').html('<i class="fas fa-circle-notch fa-spin"></i>').addClass('disabled');
 });
 
 $('#load-file-btn').click(function () {
-    $('#load-file-btn').html('<i class="fas fa-circle-notch fa-spin"></i>');
+    $('#load-file-btn').html('<i class="fas fa-circle-notch fa-spin"></i>').addClass('disabled');
 });
 
 $('#back').click(function () {
@@ -88,12 +61,11 @@ $('#learn').click(function (e) {
     $.getJSON(url, function (data) {
         $('#learn-word').html(data.infinitive);
         $.each(data.mistakes, function (key, value) {
-            var div = document.createElement('div');
-            div.innerHTML = "<div class='col-md-2'>" +
-                                "<a id='translate' class='btn btn-info' " +
-                                "href='#' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
-                                value.translate + "</a>" +
-                            "</div>";
+            var div = "<div class='col-md-2'>" +
+                        "<a id='" + value.id + "' class='btn btn-info' " +
+                        "href='javascript:' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
+                        value.translate + "</a>" +
+                      "</div>";
            $('#translates').append(div);
         });
         $('.main-study').fadeOut(0);
@@ -103,5 +75,30 @@ $('#learn').click(function (e) {
 });
 
 }());
+
+function checkAnswer(id, answer_id) {
+    if (id === answer_id) {
+        $('#' + answer_id).removeClass('btn-info').addClass('btn-success disabled');
+        var url = "/learning/answer?infinitive_id=" + id + "&answer_id=" + answer_id;
+        $.getJSON(url, function (data) {
+            if( !data.infinitive ) {
+                location.reload();
+            }
+            $('#translates').children().hide();
+            $('#learn-word').html(data.infinitive);
+            $.each(data.mistakes, function (key, value) {
+                var div =   "<div class='col-md-2'>" +
+                                "<a id='" + value.id + "' class='btn btn-info' " +
+                                "href='javascript:' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
+                                value.translate + "</a>" +
+                            "</div>";
+                $('#translates').append(div);
+            });
+        });
+    } else {
+        $('#' + answer_id).removeClass('btn-info').addClass('btn-danger disabled');
+    }
+
+}
 
 

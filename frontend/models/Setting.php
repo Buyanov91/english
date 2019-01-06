@@ -66,4 +66,13 @@ class Setting extends \yii\db\ActiveRecord
         $this->user_id = \Yii::$app->user->id;
         $this->save();
     }
+
+    public static function getCountVars()
+    {
+        $setting = self::find()->where(['user_id' => \Yii::$app->user->id])->limit(1)->one();
+        if (isset($setting->attempts)) {
+            return $setting->attempts;
+        }
+        return 3;
+    }
 }

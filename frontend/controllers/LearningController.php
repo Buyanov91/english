@@ -53,7 +53,13 @@ class LearningController extends MainController
         return json_encode($words, JSON_UNESCAPED_UNICODE);
     }
 
-
+    /**
+     * @param int $infinitive_id
+     * @param int $answer_id
+     * @return false|string
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionAnswer(int $infinitive_id, int $answer_id)
     {
         if ($infinitive_id === $answer_id) {

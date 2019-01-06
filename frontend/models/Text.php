@@ -129,9 +129,9 @@ class Text extends \yii\db\ActiveRecord
     /**
      *
      */
-    public function parseText(): void
+    public function parseText()
     {
-        $sentences = explode('.', $this->text);
+        $sentences = explode('. ', trim($this->text));
 
         foreach ($sentences as $sent) {
             $sentence = new Sentence();
@@ -161,7 +161,7 @@ class Text extends \yii\db\ActiveRecord
     {
         $words = [];
 
-        $symbols = array('!',',','.','\'','"','-',':',';','?',"\r",'(',')');
+        $symbols = array('!',',','.','\'','"','-','–',':',';','?',"\r",'(',')');
 
         $text = str_replace($symbols, '', $text);
 
