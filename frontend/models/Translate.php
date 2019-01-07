@@ -44,7 +44,7 @@ class Translate
     public function translate(string $lang = self::ENG_TO_RUS): void
     {
         $url = $this->getUrl($lang, $this->word);
-        self::prepareDataToTranslate($url);
+        $this->prepareDataToTranslate($url);
     }
 
     /**
@@ -52,13 +52,15 @@ class Translate
      */
     private function prepareDataToTranslate(string $url): void
     {
-        $data = json_decode(file_get_contents($url,3), true);
+        $data = $this->checkWordToTranslate($url);
 
-        $infinitive = $data['def'][0]['text'];
-        $translate = $data['def'][0]['tr'][0]['text'];
+        if ($data) {
+            $infinitive = $data[0]['text'];
+            $translate = $data[0]['tr'][0]['text'];
 
-        $this->translate = $translate;
-        $this->infinitive = $infinitive;
+            $this->translate = $translate;
+            $this->infinitive = $infinitive;
+        }
     }
 
     /**
@@ -69,6 +71,27 @@ class Translate
     private function getUrl(string $lang, string $word): string
     {
         return 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key='.self::KEY_TO_API.'&lang='.$lang.'&text='.$word.'&flags=4';
+    }
+
+    /**
+     * @param $url
+     * @return array|null
+     */
+    private function checkWordToTranslate($url): ?array
+    {
+        try {
+            file_get_contents($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $content = file_get_contents($url);
+        $data = json_decode($content, true);
+
+        if (empty($data['def'])) {
+            return null;
+        }
+        return $data['def'];
     }
 
 }

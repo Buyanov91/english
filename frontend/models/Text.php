@@ -86,7 +86,7 @@ class Text extends \yii\db\ActiveRecord
         $path = Yii::$app->params['pathUploads'].$filename;
         $textFile = file_get_contents($path);
 
-        $this->text = $textFile;
+        $this->text = trim($textFile);
         $this->filepath = $path;
         $this->text_md5 = $this->textMD5();
         $this->user_id = Yii::$app->user->id;
@@ -127,9 +127,9 @@ class Text extends \yii\db\ActiveRecord
     }
 
     /**
-     *
+     * @return bool
      */
-    public function parseText()
+    public function parseText(): bool
     {
         $sentences = explode('. ', trim($this->text));
 
@@ -144,13 +144,20 @@ class Text extends \yii\db\ActiveRecord
                 $translate = new Translate($newWord);
                 $translate->translate(Translate::ENG_TO_RUS);
 
-                $infinitive = new Infinitive();
-                $infinitive->updateAttributesFromWord($translate->infinitive, $translate->translate, $amount);
+                if (empty($translate->infinitive)) {
+                    $session = Yii::$app->session;
+                    $session->setFlash('error', 'Некорректный текст.');
+                    return false;
+                } else {
+                    $infinitive = new Infinitive();
+                    $infinitive->updateAttributesFromWord($translate->infinitive, $translate->translate, $amount);
 
-                $word = new Word();
-                $word->updateAttributesFromSentences($newWord, $sentence->id, $infinitive->id);
+                    $word = new Word();
+                    $word->updateAttributesFromSentences($newWord, $sentence->id, $infinitive->id);
+                }
             }
         }
+        return true;
     }
 
     /**

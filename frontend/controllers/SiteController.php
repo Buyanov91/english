@@ -42,13 +42,14 @@ class SiteController extends MainController
 
             if(Text::checkTextForExist($text->text)) {
                 $session = Yii::$app->session;
-                $session->setFlash('error', 'Этот текст уже загружали ранее');
+                $session->setFlash('error', 'Этот текст уже загружали ранее.');
                 return $this->goHome();
             }
 
-            if($text->save()) {
-              $text->parseText();
-              return $this->goHome();
+            if($text->save() && $text->parseText()) {
+                $session = Yii::$app->session;
+                $session->setFlash('success', 'Текст успешно загружен.');
+                return $this->goHome();
             }
         }
 
