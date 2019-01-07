@@ -61,11 +61,9 @@ $('#learn').click(function (e) {
     $.getJSON(url, function (data) {
         $('#learn-word').html(data.infinitive);
         $.each(data.mistakes, function (key, value) {
-            var div = "<div class='col-md-2'>" +
-                        "<a id='" + value.id + "' class='btn btn-info' " +
+            var div = "<div><a id='" + value.id + "' class='btn btn-info' " +
                         "href='javascript:' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
-                        value.translate + "</a>" +
-                      "</div>";
+                        value.translate + "</a></div>";
            $('#translates').append(div);
         });
         $('.main-study').fadeOut(0);
@@ -84,14 +82,12 @@ function checkAnswer(id, answer_id) {
             if( !data.infinitive ) {
                 location.reload();
             }
-            $('#translates').children().hide();
+            $('#translates').children().remove();
             $('#learn-word').html(data.infinitive);
             $.each(data.mistakes, function (key, value) {
-                var div =   "<div class='col-md-2'>" +
-                                "<a id='" + value.id + "' class='btn btn-info' " +
+                var div =   "<div><a id='" + value.id + "' class='btn btn-info' " +
                                 "href='javascript:' onclick='checkAnswer(" + data.id + "," + value.id + ")'> " +
-                                value.translate + "</a>" +
-                            "</div>";
+                                value.translate + "</a></div>";
                 $('#translates').append(div);
             });
         });

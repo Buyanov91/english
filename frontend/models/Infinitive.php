@@ -151,7 +151,7 @@ class Infinitive extends \yii\db\ActiveRecord
             ->select('id, infinitive, translate')
             ->where('id!='.$id)
             ->orderBy('RAND()')
-            ->limit($count)
+            ->limit($count-1)
             ->asArray()
             ->all();
         return $all;

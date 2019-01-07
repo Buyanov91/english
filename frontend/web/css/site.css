@@ -148,6 +148,11 @@ a:hover {
 .shadow small {
     float: right;
 }
+
+.main-study .shadow {
+    height: 135px;
+}
+
 .hide-study, .hide-translate-true, .hide-translate-false, .hide-end-button {
     display: none;
 }
@@ -172,11 +177,18 @@ a:hover {
 }
 
 #translates a {
-    margin-top: 50px;
-    margin-left: 50px;
-    width: 150px;
+    margin: 20px;
+    width: 160px;
 }
 
 a.disabled {
     pointer-events: none;
+}
+
+.centered {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
 }
