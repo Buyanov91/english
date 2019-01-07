@@ -9,12 +9,18 @@ use common\models\User;
  *
  * @property int $user_id
  * @property int $attempts
- * @property int $lang
+ * @property string $lang
  *
  * @property User $user
  */
 class Setting extends \yii\db\ActiveRecord
 {
+    const ENG_TO_RUS = 'en-ru';
+
+    const RUS_TO_ENG = 'ru-en';
+
+    const DEFAULT_ATTEMPTS = 3;
+
     /**
      * {@inheritdoc}
      */
@@ -30,7 +36,8 @@ class Setting extends \yii\db\ActiveRecord
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'attempts', 'lang'], 'integer'],
+            [['user_id', 'attempts'], 'integer'],
+            [['lang'], 'string'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -55,24 +62,45 @@ class Setting extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+    /**
+     * @return array|string[]
+     */
     public static function primaryKey()
     {
         return ['user_id'];
     }
 
-
+    /**
+     *
+     */
     public function updateAttributesFromForm(): void
     {
         $this->user_id = \Yii::$app->user->id;
         $this->save();
     }
 
-    public static function getCountVars()
+    /**
+     * @return int
+     */
+    public static function getCountVars(): int
     {
         $setting = self::find()->where(['user_id' => \Yii::$app->user->id])->limit(1)->one();
-        if (isset($setting->attempts)) {
-            return $setting->attempts;
+        if (empty($setting->attempts)) {
+            return self::DEFAULT_ATTEMPTS;
         }
-        return 3;
+        return $setting->attempts;
     }
+
+    /**
+     * @return mixed|string
+     */
+    public static function getLang(): string
+    {
+        $setting = self::find()->where(['user_id' => \Yii::$app->user->id])->limit(1)->one();
+        if (empty($setting->lang)) {
+            return self::ENG_TO_RUS;
+        }
+        return $setting->lang;
+    }
+
 }

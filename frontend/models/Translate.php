@@ -14,9 +14,9 @@ namespace app\models;
  */
 class Translate
 {
-    const RUS_TO_ENG = 'ru-en';
-
     const ENG_TO_RUS = 'en-ru';
+
+    const RUS_TO_ENG = 'ru-en';
 
     const KEY_TO_API = 'dict.1.1.20181102T061057Z.1cde8c000cfdc4f7.bd4e27863b0270a2fe2e1ea6d0f712faeefdfaa4';
 

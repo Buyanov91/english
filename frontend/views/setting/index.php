@@ -42,8 +42,8 @@ use yii\helpers\Html;
     <?= $form->field($profile, 'age')->textInput(['type' => 'number']) ?>
 
     <?= $form->field($settings, 'lang')->dropDownList([
-            '0' => 'С Английского на Русский',
-            '1' => 'С Русского на Английский'
+            'en-ru' => 'С Английского на Русский',
+            'ru-en' => 'С Русского на Английский'
     ]) ?>
 
     <?= $form->field($settings, 'attempts')->dropDownList([

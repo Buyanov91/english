@@ -13,6 +13,7 @@ use Yii;
  * @property string $text_md5
  * @property string $filepath
  * @property int $user_id
+ * @property string $lang
  *
  * @property Sentence[] $sentences
  * @property User $user
@@ -35,7 +36,7 @@ class Text extends \yii\db\ActiveRecord
         return [
             [['user_id', 'text', 'text_md5'], 'required'],
             [['user_id'], 'integer'],
-            [['text', 'text_md5', 'filepath'], 'string', 'max' => 255],
+            [['text', 'text_md5', 'filepath', 'lang'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -51,6 +52,7 @@ class Text extends \yii\db\ActiveRecord
             'text_md5' => 'Text Md5',
             'filepath' => 'Filepath',
             'user_id' => 'User ID',
+            'lang' => 'Язык перевода',
         ];
     }
 
@@ -79,6 +81,14 @@ class Text extends \yii\db\ActiveRecord
     }
 
     /**
+     *
+     */
+    public function setLang(): void
+    {
+        $this->lang = Setting::getLang();
+    }
+
+    /**
      * @param string $filename
      */
     public function updateAttributesFromFile(string $filename): void
@@ -90,6 +100,7 @@ class Text extends \yii\db\ActiveRecord
         $this->filepath = $path;
         $this->text_md5 = $this->textMD5();
         $this->user_id = Yii::$app->user->id;
+        $this->setLang();
     }
 
     /**
@@ -99,6 +110,7 @@ class Text extends \yii\db\ActiveRecord
     {
         $this->text_md5 = $this->textMD5();
         $this->user_id = Yii::$app->user->id;
+        $this->setLang();
     }
 
     /**
@@ -124,69 +136,6 @@ class Text extends \yii\db\ActiveRecord
         } else {
             return false;
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function parseText(): bool
-    {
-        $sentences = explode('. ', trim($this->text));
-
-        foreach ($sentences as $sent) {
-            $sentence = new Sentence();
-            $sentence->updateAttributesFromText($this->id, $sent);
-
-            $words = self::parseTextToWords($sent);
-
-            foreach ($words as $newWord => $amount) {
-
-                $translate = new Translate($newWord);
-                $translate->translate(Translate::ENG_TO_RUS);
-
-                if (empty($translate->infinitive)) {
-                    $session = Yii::$app->session;
-                    $session->setFlash('error', 'Некорректный текст.');
-                    return false;
-                } else {
-                    $infinitive = new Infinitive();
-                    $infinitive->updateAttributesFromWord($translate->infinitive, $translate->translate, $amount);
-
-                    $word = new Word();
-                    $word->updateAttributesFromSentences($newWord, $sentence->id, $infinitive->id);
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param string $text
-     * @return array
-     */
-    public static function parseTextToWords(string $text): array
-    {
-        $words = [];
-
-        $symbols = array('!',',','.','\'','"','-','–',':',';','?',"\r",'(',')');
-
-        $text = str_replace($symbols, '', $text);
-
-        $text = str_replace("\n", ' ', $text);
-
-        $text_array = explode(' ',$text);
-
-        foreach($text_array as $val){
-            if($val==''){continue;}
-            $val = strtolower($val);
-            if(array_key_exists($val, $words)){
-                $words[$val]++;
-            } else {
-                $words[$val] = 1;
-            }
-        }
-
-        return $words;
     }
 
 }

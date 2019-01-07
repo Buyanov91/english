@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use app\models\Parser;
 use app\models\Text;
 use Yii;
 use yii\base\InvalidParamException;
@@ -20,7 +21,9 @@ class SiteController extends MainController
     /**
      * Displays homepage.
      *
-     * @return mixed
+     * @return string|\yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionIndex()
     {
@@ -46,13 +49,12 @@ class SiteController extends MainController
                 return $this->goHome();
             }
 
-            if($text->save() && $text->parseText()) {
+            if($text->save() && (new Parser($text))->parseText()) {
                 $session = Yii::$app->session;
                 $session->setFlash('success', 'Текст успешно загружен.');
                 return $this->goHome();
             }
         }
-
         return $this->render('index', ['text' => $text, 'file' => $file]);
     }
 
