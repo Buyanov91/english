@@ -19,9 +19,9 @@ class LearningController extends MainController
      */
     public function actionIndex()
     {
-        $words = Infinitive::findInfinitivesToStudy();
+        $words = Word::findWordsToStudy();
 
-        $percent = Infinitive::calcPercentStudiedWords();
+        $percent = Word::calcPercentStudiedWords();
 
         return $this->render('index', ['words' => $words, 'percent' => $percent]);
     }
@@ -49,7 +49,8 @@ class LearningController extends MainController
      */
     public function actionRandomWord()
     {
-        $words = Infinitive::getRandomWordForJson();
+        $words = Word::getRandomWordForJson();
+
         return json_encode($words, JSON_UNESCAPED_UNICODE);
     }
 

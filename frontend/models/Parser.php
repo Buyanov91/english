@@ -35,15 +35,15 @@ class Parser extends ActiveRecord
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function parseText(): bool
+    public function parseText()
     {
-        $sentences = explode('. ', trim($this->text_text));
+        $sentences = self::parseTextToSentence($this->text_text);
 
         foreach ($sentences as $sent) {
             $sentence = new Sentence();
             $sentence->updateAttributesFromText($this->text_id, $sent);
 
-            $words = self::parseTextToWords($sent);
+            $words = self::parseSentenceToWords($sent);
 
             foreach ($words as $newWord => $amount) {
 
@@ -71,7 +71,7 @@ class Parser extends ActiveRecord
      * @param string $text
      * @return array
      */
-    public static function parseTextToWords(string $text): array
+    private static function parseSentenceToWords(string $text): array
     {
         $words = [];
 
@@ -94,5 +94,26 @@ class Parser extends ActiveRecord
         }
 
         return $words;
+    }
+
+    /**
+     * @param string $text
+     * @return array
+     */
+    private static function parseTextToSentence(string $text): array
+    {
+        preg_match_all("/.*?[.?!](?:\s?|$)/", $text,$sentences);
+
+        if (empty($sentences[0])) {
+            return array($text);
+        }
+        $symbols = array('!',',','.','\'','"','-','–',':',';','?',"\r",'(',')');
+
+        foreach ($sentences[0] as $key => $sentence) {
+            if (in_array($sentence, $symbols)) {
+                unset($sentences[0][$key]);
+            }
+        }
+        return $sentences[0];
     }
 }
