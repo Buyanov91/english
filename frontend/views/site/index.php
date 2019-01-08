@@ -44,7 +44,7 @@ $this->title = 'English';
                         </div>
                         <div class="form-group col-md-4">
                             <?= Html::submitButton('Загрузить', ['id' => 'load-btn', 'class' => 'btn btn-primary']) ?>
-                            <?= Html::button('Назад', ['id' => 'back', 'class' => 'btn btn-secondary']) ?>
+                            <?= Html::button('Назад', ['id' => 'back', 'class' => 'btn btn-warning']) ?>
                         </div>
                     </div>
 
@@ -54,11 +54,11 @@ $this->title = 'English';
 
                     <div class="row">
                         <div class="col-md-8">
-                            <?= $form->field($file, 'file')->fileInput()->label(false) ?>
+                            <?= $form->field($file, 'file')->fileInput()->label('Выбрать файл', ['class' => 'btn btn-lg btn-info']) ?>
                         </div>
                         <div class="form-group col-md-4">
                             <?= Html::submitButton('Загрузить', ['id' => 'load-file-btn', 'class' => 'btn btn-primary']) ?>
-                            <?= Html::button('Назад', ['id' => 'back-file', 'class' => 'btn btn-secondary']) ?>
+                            <?= Html::button('Назад', ['id' => 'back-file', 'class' => 'btn btn-warning']) ?>
                         </div>
                     </div>
 

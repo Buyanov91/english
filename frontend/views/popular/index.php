@@ -82,7 +82,7 @@ $this->title = 'English | Словарь';
                                 <?php Modal::begin([
                                     'header' => '<h2>'.ucfirst($word['infinitive']).'</h2>',
                                     'toggleButton' => [
-                                        'label' => $word['infinitive']. " - ". $word['translate'],
+                                        'label' => ucfirst($word['infinitive']). " - ". ucfirst($word['translate']),
                                         'tag' => 'a',
                                         'class' => 'text-muted',
                                     ],
