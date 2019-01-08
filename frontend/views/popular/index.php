@@ -8,8 +8,8 @@ use yii\bootstrap\Modal;
 $this->title = 'English | Словарь';
 ?>
 <div class="jumbotron">
-    <div class="row">
-        <h2 class="h2-pop">Словарь</h2>
+    <div class="row dictionary">
+        <h1 class="h2-pop">Словарь</h1>
         <div class="col-md-4">
             <h3>Популярные слова</h3>
             <br>

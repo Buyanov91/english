@@ -11,7 +11,7 @@ body {
 }
 
 .wrap > .container {
-    padding: 70px 15px 20px;
+    padding: 50px 15px 20px;
 }
 
 .footer {
@@ -151,11 +151,20 @@ a:hover {
 }
 
 .status-study {
-    background: lightgreen;
+    background: #4cae4c;
+}
+
+.status-study a, .status-unstudied a {
+    color: #ffffff;
+}
+
+.dictionary p {
+    margin: 0;
+    padding-top: 4px;
 }
 
 .status-unstudied {
-    background: lightpink;
+    background: #d9534f;
 }
 
 .main-study .shadow {
@@ -204,4 +213,21 @@ a.disabled {
     justify-content: center;
     align-items: center;
     align-content: center;
+}
+
+#profile h2 {
+    margin-top: 0;
+}
+
+#profile button {
+    width: 200px;
+    float: right;
+}
+
+#profile label.photo-upload {
+    width: 200px;
+}
+
+  #profile-avatar {
+    display: none;
 }

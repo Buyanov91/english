@@ -8,13 +8,13 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 ?>
 
-<div class="container">
-    <h2>Пользователь <b><?= Yii::$app->user->identity->username ?></b></h2>
-</div>
-<br>
-<?php $form = ActiveForm::begin(['id' => 'profile']); ?>
 
+<?php $form = ActiveForm::begin(['id' => 'profile']); ?>
+<br>
 <div class="col-md-4">
+
+    <h2>Пользователь <b><?= Yii::$app->user->identity->username ?></b></h2>
+
     <?php if (empty($profile->avatar)) : ?>
 
         <div class="image">
@@ -29,9 +29,9 @@ use yii\helpers\Html;
 
     <?php endif; ?>
 
-    <?= $form->field($profile, 'avatar')->fileInput()->label(false); ?>
+    <?= $form->field($profile, 'avatar')->fileInput()->label('Выбрать фото', ['class' => 'btn btn-info btn-lg photo-upload']); ?>
 
-</div>
+</div><br><br>
 
 <div class="col-md-offset-1 col-md-6">
 
@@ -53,12 +53,14 @@ use yii\helpers\Html;
         '5' => '5'
     ]) ?>
 
+    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-lg', 'name' => 'login-button']) ?>
+
 </div>
 
 <div class="clearfix"></div>
 
 <div class="container">
-    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-lg', 'name' => 'login-button']) ?>
+
 </div>
 
 <?php ActiveForm::end(); ?>

@@ -107,7 +107,7 @@ class Word extends \yii\db\ActiveRecord
     public static function findStudiedWords(): array
     {
         $words = self::find()
-            ->select('*')
+            ->select('infinitive.infinitive, infinitive.translate, word.sentence_id, word.infinitive_id, sentence.sentence, study.status')
             ->innerJoinWith('study')
             ->innerJoinWith('text')
             ->where(['text.user_id' => Yii::$app->user->id])
