@@ -138,4 +138,22 @@ class Text extends \yii\db\ActiveRecord
         }
     }
 
+    /**
+     * @return array
+     */
+    public static function findAllWords(): array
+    {
+        $words = self::find()
+            ->select('*')
+            ->join('JOIN', 'sentence', 'sentence.text_id=text.id')
+            ->join('JOIN', 'word', 'word.sentence_id=sentence.id')
+            ->join('JOIN', 'infinitive', 'word.infinitive_id=infinitive.id')
+            ->join('LEFT JOIN', 'study', 'study.infinitive_id=infinitive.id')
+            ->where(['text.user_id' => Yii::$app->user->id])
+            ->andWhere(['text.lang' => Setting::getLang()])
+            ->asArray()
+            ->limit(20)
+            ->all();
+        return $words;
+    }
 }

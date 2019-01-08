@@ -140,17 +140,30 @@ a:hover {
 }
 
 .shadow {
+    height: 40px;
     margin-left: 30px;
     margin-bottom: 20px;
     box-shadow: 0 3px 7px rgba(0,0,0,0.19), 0 3px 3px rgba(0,0,0,0.22);
 }
 
-.shadow small {
-    float: right;
+.h2-pop {
+    margin: 0;
+}
+
+.status-study {
+    background: lightgreen;
+}
+
+.status-unstudied {
+    background: lightpink;
 }
 
 .main-study .shadow {
     height: 135px;
+}
+
+.main-study .btn {
+    width: 260px;
 }
 
 .hide-study, .hide-translate-true, .hide-translate-false, .hide-end-button {

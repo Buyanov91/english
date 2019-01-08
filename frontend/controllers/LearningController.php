@@ -8,7 +8,6 @@
 
 namespace frontend\controllers;
 
-use app\models\Infinitive;
 use app\models\Study;
 use app\models\Word;
 

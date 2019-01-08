@@ -104,6 +104,22 @@ class Word extends \yii\db\ActiveRecord
         return $infinitives;
     }
 
+    public static function findStudiedWords(): array
+    {
+        $words = self::find()
+            ->select('*')
+            ->innerJoinWith('study')
+            ->innerJoinWith('text')
+            ->where(['text.user_id' => Yii::$app->user->id])
+            ->andWhere(['text.lang' => Setting::getLang()])
+            ->andWhere(['study.status' => Study::STATUS_STUDIED])
+            ->groupBy('infinitive.id')
+            ->asArray()
+            ->limit(20)
+            ->all();
+        return $words;
+    }
+
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
@@ -146,17 +162,25 @@ class Word extends \yii\db\ActiveRecord
     {
         $count_study = self::find()
             ->innerJoinWith('study')
+            ->innerJoinWith('text')
             ->where(['study.user_id' => Yii::$app->user->id])
             ->andWhere(['study.status' => Study::STATUS_STUDIED])
+            ->andWhere(['text.lang' => Setting::getLang()])
             ->count();
 
-        $count_all = Infinitive::find()->count();
+        $count_all = self::find()
+            ->innerJoinWith('text')
+            ->innerJoinWith('infinitive')
+            ->where(['text.user_id' => Yii::$app->user->id])
+            ->andWhere(['text.lang' => Setting::getLang()])
+            ->groupBy('infinitive.id')
+            ->count();
 
         $percent = 0;
 
         if((int) $count_all !== 0) {
             if ((int) $count_study !== 0) {
-                $percent = round(100-($count_study/$count_all*100), 1);
+                $percent = round($count_study/$count_all*100, 1);
             }
         }
         return $percent;

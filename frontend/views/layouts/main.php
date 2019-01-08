@@ -46,7 +46,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
     } else {
         $menuItems[] = ['label' => 'Изучение', 'url' => ['/learning/'], 'active' => $checkController('learning')];
-        $menuItems[] = ['label' => 'Популярные Слова', 'url' => ['/popular/'], 'active' => $checkController('popular')];
+        $menuItems[] = ['label' => 'Словарь', 'url' => ['/popular/'], 'active' => $checkController('popular')];
         $menuItems[] = '<li>'
             . Html::a('<i class="fas fa-cog fa-spin"></i>', '/setting')
             . '</li>';

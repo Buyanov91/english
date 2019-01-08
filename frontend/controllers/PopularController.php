@@ -9,13 +9,22 @@
 namespace frontend\controllers;
 
 use app\models\Word;
+use app\models\Text;
 
 class PopularController extends MainController
 {
     public function actionIndex()
     {
-        $words = Word::findPopular();
+        $popularWords = Word::findPopular();
 
-        return $this->render('index', ['words' => $words]);
+        $allWords = Text::findAllWords();
+
+        $studiedWords = Word::findStudiedWords();
+
+        return $this->render('index', [
+            'popularWords' => $popularWords,
+            'allWords' => $allWords,
+            'studiedWords' => $studiedWords
+        ]);
     }
 }
