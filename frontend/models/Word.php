@@ -235,6 +235,7 @@ class Word extends \yii\db\ActiveRecord
             ->innerJoinWith('text')
             ->where('infinitive.id!='.$id)
             ->andWhere(['text.lang' => Setting::getLang()])
+            ->andWhere(['text.user_id' => Yii::$app->user->id])
             ->groupBy('word.word')
             ->orderBy('RAND()')
             ->limit($count-1)
